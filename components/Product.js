@@ -167,9 +167,9 @@ const Product = ({
 									vertical: 'top',
 									horizontal: 'center',
 								}}
-								className=''
+								className='max-w-xl'
 							>
-								<span className='box-border px-1 py-0.5 drop-shadow-md text-lg text-slate-900'>
+								<span className='box-border  px-1 py-0.5 drop-shadow-md text-lg text-slate-900'>
 									{!!product?.description
 										? product?.description
 										: 'No description was found.'}

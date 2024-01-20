@@ -27,7 +27,7 @@ export const routes = [
 		icon: <HiBriefcase size={size} className={`align-top`} />,
 	},
 	{
-		name: 'Products',
+		name: 'Product',
 		pathname: '/admin/products?page=1&search=',
 		icon: <HiTemplate size={size} className={`align-top`} />,
 	},
@@ -57,49 +57,31 @@ export const routes = [
 		pathname: '/admin/settings',
 		icon: <IoSettingsSharp size={size} className={`align-top`} />,
 	},
-	{
-		name: 'Your Products',
-		pathname: '/dealer?page=1&search=',
-		icon: <HiCube size={size} className={`align-top`} />,
-	},
-	{
-		name: 'New Products',
-		pathname: '/dealer/new-products?page=1&search=',
-		icon: <HiBriefcase size={size} className={`align-top`} />,
-	},
-	{
-		name: 'Suggest Product',
-		pathname: '/dealer/product-offer',
-		icon: <HiLightBulb size={size} className={`align-top`} />,
-	},
-	{
-		name: 'Your Payments',
-		pathname: '/dealer/payments',
-		icon: <RiSecurePaymentFill size={size} className={`align-top`} />,
-	},
-	{
-		name: 'Your Orders',
-		pathname: '/dealer/see-orders/WAIT?page=1&search=&isNameSearch=true',
-		icon: <HiCash size={size} className={`align-top`} />,
-	},
+	// {
+	// 	name: 'Products',
+	// 	pathname: '/dealer?page=1&search=',
+	// 	icon: <HiCube size={size} className={`align-top`} />,
+	// },
 	{
 		name: 'Profile',
 		pathname: '/dealer/profile',
 		icon: <HiUser size={size} className={`align-top`} />,
 	},
+	{
+		name: 'Order History',
+		pathname: '/dealer/see-orders/WAIT?page=1&search=&isNameSearch=true',
+		icon: <HiCash size={size} className={`align-top`} />,
+	},
 ];
 
 export const dealerPages = [
-	'Your Products',
-	'New Products',
-	'Suggest Product',
+	'Products',
 	'Profile',
-	'Your Payments',
 	'Your Orders',
 ];
 export const adminPages = [
 	'Dashboard',
-	'Products',
+	'Product',
 	'Customers',
 	'Inquiries',
 	'Categories',

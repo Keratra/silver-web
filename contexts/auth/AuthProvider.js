@@ -8,6 +8,7 @@ import Router from 'next/router';
 import axios from 'axios';
 import { notify } from 'utils/notify';
 import { CART } from 'utils/constants';
+import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
 
@@ -38,7 +39,7 @@ function AuthProvider({ children }) {
 	// 				error?.response?.data?.message ??
 	// 				error?.response?.data ??
 	// 				error?.message ??
-	// 				'FE - Çıkış yaparken hata oluştu.'
+	// 				'FE - Error occured during logout.'
 	// 		);
 	// 	}
 	// };
@@ -86,7 +87,7 @@ function AuthProvider({ children }) {
 				userName,
 			},
 		});
-		notify('success', 'Giriş yapıldı');
+		notify('success', 'Logged in');
 	}
 
 	function logout() {
@@ -99,8 +100,11 @@ function AuthProvider({ children }) {
 		dispatch({
 			type: LOGOUTUSER,
 		});
+
+		Cookies.set('token', '')
+
 		// handleLogout();
-		notify('success', 'Çıkış yapıldı');
+		notify('success', 'Logged out');
 	}
 
 	return (

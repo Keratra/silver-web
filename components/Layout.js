@@ -115,7 +115,7 @@ export default function Layout({ fullWidth, title, children }) {
 							// ['admin', 'dealer'].includes(appState.userType) && logout
 							className={`inline-block align-text-bottom mr-1`}
 						/>{' '}
-						Çıkış
+						LOGOUT
 					</Link>
 				</NextLink>
 			</section>;
@@ -135,7 +135,7 @@ export default function Layout({ fullWidth, title, children }) {
 							// ['admin', 'dealer'].includes(appState.userType) && logout
 							className={`inline-block align-text-bottom mr-1`}
 						/>{' '}
-						Çıkış
+						LOGOUT
 					</Link>
 				</NextLink>
 			</section>

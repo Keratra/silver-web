@@ -53,6 +53,9 @@ export default function DealerOrdersPage({
 			startDate,
 			endDate,
 		});
+		setSearch('');
+		setPage(1);
+		setSearchType(true);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [startDate, endDate]);
 	// don't add Router to the dependency array, it refreshes endlessly
@@ -87,7 +90,7 @@ export default function DealerOrdersPage({
 			},
 		});
 	};
-
+ 	
 	if (error) {
 		return (
 			<Layout>
@@ -110,14 +113,14 @@ export default function DealerOrdersPage({
 				<section className=' mx-2 my-1 '>
 					<div
 						className='
-            grid grid-cols-2 lg:grid-cols-4 gap-2 gap-y-4
-						p-3.5
-            bg-white border-neutral-200
-            rounded-sm  shadow-md '
+							grid grid-cols-2 lg:grid-cols-4 gap-2 gap-y-4
+										p-3.5
+							bg-white border-neutral-200
+							rounded-sm  shadow-md '
 					>
 						<LocalizationProvider dateAdapter={AdapterMoment}>
 							<DatePicker
-								label='Başlangıç Tarihi'
+								label='Start Date'
 								value={new Date(startDate)}
 								onChange={(newValue) => {
 									setStartDate(newValue.toDate());
@@ -126,7 +129,7 @@ export default function DealerOrdersPage({
 							/>
 
 							<DatePicker
-								label='Bitiş Tarihi'
+								label='End Date'
 								value={new Date(endDate)}
 								onChange={(newValue) => {
 									setEndDate(newValue.toDate());
@@ -137,7 +140,7 @@ export default function DealerOrdersPage({
 
 						<div className='col-span-2 flex items-center'>
 							<Searchy
-								forOrders
+								// forOrders
 								value={searchValue}
 								handleSearchChange={(e) => setSearch(() => e.target.value)}
 								searchType={isNameSearch}
@@ -195,34 +198,40 @@ export async function getServerSideProps({ req, query }) {
 		const order_status = ORDER_CATEGORIES[status];
 
 		const queryData = {
-			id_search: !searchName ? search : '',
+			page_size: 10,
 			product_search: !!searchName ? search : '',
 			order_status,
 			start_date: startDate ?? '2022-01-01',
-			end_date: modifiedEndDate ?? new Date().toISOString().split('T')[0],
+			end_date: modifiedEndDate ?? new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0],
 		};
 
-		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/orders-max-pages`;
+		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/my-orders-max-page`;
 		const { data: dataMaxPage } = await axios.post(
 			backendURLmaxPage,
-			queryData,
+			{
+				...queryData
+			},
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
 				},
 			}
 		);
 
-		const { number_of_pages } = dataMaxPage;
+		const { page_number: number_of_pages } = dataMaxPage;
 
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/orders/${page}`;
-		const { data: dataOrders } = await axios.post(backendURL, queryData, {
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/my-orders/${page}`;
+		const { data: dataOrders } = await axios.post(backendURL, {
+			...queryData
+		}, {
 			headers: {
 				Authorization: `Bearer ${token}`,
+				'Content-Type': 'application/json',
 			},
 		});
 
-		const { orders, dealer_name } = dataOrders;
+		const { orders } = dataOrders;
 
 		return {
 			props: {
@@ -252,7 +261,9 @@ export async function getServerSideProps({ req, query }) {
 				queryEndDate: new Date().toISOString().split('T')[0],
 				orders: [],
 				number_of_pages: 1,
-				error: true,
+				error: error?.response?.data?.message?.message ??
+				error?.response?.data?.message ??
+				error?.message,
 			},
 		};
 	}

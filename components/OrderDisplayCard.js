@@ -72,17 +72,16 @@ function Row({
 				)}
 
 				{/* Detay Açma Sütunu */}
-				{!forDealers && (
-					<TableCell>
-						<IconButton
-							aria-label='expand row'
-							size='small'
-							onClick={() => setOpen(!open)}
-						>
-							{open ? <IoIosArrowUp size={18} /> : <IoIosArrowDown size={18} />}
-						</IconButton>
-					</TableCell>
-				)}
+				<TableCell>
+					<IconButton
+						aria-label='expand row'
+						size='small'
+						onClick={() => setOpen(!open)}
+					>
+						{open ? <IoIosArrowUp size={18} /> : <IoIosArrowDown size={18} />}
+					</IconButton>
+				</TableCell>
+				
 
 				<TableCell component='th' scope='row'>
 					{order_id}
@@ -222,7 +221,8 @@ function Row({
 									))}
 								</TableBody>
 							</Table>
-
+							
+							
 							<div className='flex justify-around items-start gap-4'>
 								<div className='my-4 flex flex-col justify-center items-center text-lg text-center gap-2'>
 									<span className=' font-semibold px-1 uppercase border-solid border-0 border-b '>
@@ -230,7 +230,8 @@ function Row({
 									</span>{' '}
 									{description}
 								</div>
-								<div className='my-4 flex flex-col justify-center items-center text-lg text-center gap-2'>
+								{!forDealers && (
+									<div className='my-4 flex flex-col justify-center items-center text-lg text-center gap-2'>
 									<span className=' font-semibold px-1 uppercase border-solid border-0 border-b '>
 										CUSTOMER DESCRIPTION
 									</span>{' '}
@@ -246,6 +247,8 @@ function Row({
 									</div>
 									
 								</div>
+								)}
+								
 							</div>
 						</Box>
 					</Collapse>
@@ -340,7 +343,7 @@ export function OrderDisplayCard({
 							</TableCell>
 						)}
 
-						{!forDealers && <TableCell>Details</TableCell>}
+						<TableCell>Details</TableCell>
 						<TableCell>Order No</TableCell>
 						{!forDealers && <TableCell>Customer</TableCell>}
 						<TableCell align='right'>Order Total</TableCell>
