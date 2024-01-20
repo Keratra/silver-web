@@ -96,7 +96,7 @@ const Product = ({
 	}
 
 	return (
-		<div className='border-solid border border-transparent shadow-none md:hover:shadow-2xl md:hover:border-slate-900 transition-all'>
+		<div className='border-solid border border-transparent shadow-none md:hover:shadow-2xl md:hover:border-slate-200 transition-all'>
 			<Card className={`shadow-md rounded-none  bg-slate-100 text-black `}>
 				<CardMedia className='bg-white'>
 					{/* <CardMedia
@@ -167,7 +167,7 @@ const Product = ({
 									vertical: 'top',
 									horizontal: 'center',
 								}}
-								className='max-w-xl'
+								className='max-w-5xl'
 							>
 								<span className='box-border  px-1 py-0.5 drop-shadow-md text-lg text-slate-900'>
 									{!!product?.description

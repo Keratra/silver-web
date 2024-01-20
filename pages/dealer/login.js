@@ -41,7 +41,7 @@ export default function Login() {
 				userType: loginType,
 			});
 
-			Router.replace('/dealer/profile');
+			Router.replace('/');
 		} catch (error) {
 			notify(
 				'error',

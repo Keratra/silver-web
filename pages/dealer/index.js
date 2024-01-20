@@ -3,6 +3,7 @@ import Product from '@components/Product';
 import SizeSelector from '@components/SizeSelector';
 import Searchy from '@components/Searchy';
 import {
+	Autocomplete,
 	Button,
 	Dialog,
 	DialogContent,
@@ -16,7 +17,7 @@ import {
 	TextField,
 } from '@mui/material';
 import { FiTrash, FiShoppingBag } from 'react-icons/fi';
-import { useState, useReducer } from 'react';
+import { useState, useReducer, useEffect } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -28,6 +29,7 @@ import { Formik } from 'formik';
 import Badge from '@mui/material/Badge';
 import { notify } from 'utils/notify';
 import { v4 as uuidv4 } from 'uuid';
+import { HiMailOpen, HiShoppingCart, HiUserCircle, HiMap, HiLogin, HiViewGrid } from "react-icons/hi";
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
@@ -178,7 +180,9 @@ export function reducer(state, action) {
 
 export default function DealerProductsPage({
 	queryPage,
+	queryCategories,
 	querySearch,
+	categories,
 	categoryLabels,
 	number_of_pages,
 	errorMessage,
@@ -192,11 +196,24 @@ export default function DealerProductsPage({
 	const [page, setPage] = useState(queryPage ?? 1);
 	const [open, setOpen] = useState(false);
 	const [selected, setSelected] = useState({ showSkeleton: true });
+	const [selectedCategories, setSelectedCategories] = useState(JSON.parse("[" + queryCategories + "]") ?? []);
+
+	const [user, setUser] = useState(false);
+
+	useEffect(() => {
+		const token = loadState('token')?.token;
+		if (!token || token === '' || token === 'null' || token === null ) {
+			setUser(() => false);
+		} else {
+			setUser(() => true);
+		}
+		// notify('info', token);
+	}, []);
 
 	const Router = useRouter();
 
 	const { data, error } = useSWR(
-		`/api/dealer/get-products?page=${queryPage ?? 1}&search=${
+		`/api/dealer/get-products?page=${queryPage ?? 1}&categories=${queryCategories ?? []}&search=${
 			querySearch ?? ''
 		}`,
 		fetcher
@@ -204,7 +221,37 @@ export default function DealerProductsPage({
 	// TEMPORARY ERROR and LOADING screen RETURNS
 	if (error)
 		return (
-			<Layout>
+			<Layout fullWidth>
+				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+					SILVER
+				</h1>
+				<nav className='w-full flex justify-end items-center flex-wrap'>
+					<NextLink href='/' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiViewGrid size={24} className='' /> Home
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/contact' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMailOpen size={24} className='' />Contact
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/map' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMap size={24} className='' />Map
+							</span>
+						</Link>
+					</NextLink>
+				</nav>
+			</header>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
 					An error occured.
 				</div>
@@ -212,7 +259,37 @@ export default function DealerProductsPage({
 		);
 	if (!data)
 		return (
-			<Layout>
+			<Layout fullWidth>
+				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+					SILVER
+				</h1>
+				<nav className='w-full flex justify-end items-center flex-wrap'>
+					<NextLink href='/' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiViewGrid size={24} className='' /> Home
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/contact' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMailOpen size={24} className='' />Contact
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/map' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMap size={24} className='' />Map
+							</span>
+						</Link>
+					</NextLink>
+				</nav>
+			</header>
 				<div className="w-full h-[30vh] flex justify-center items-center text-orange-500 text-2xl font-['Roboto']">
 					Loading...
 				</div>
@@ -221,7 +298,37 @@ export default function DealerProductsPage({
 
 	if (!!data.message) {
 		return (
-			<Layout>
+			<Layout fullWidth>
+				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+					SILVER
+				</h1>
+				<nav className='w-full flex justify-end items-center flex-wrap'>
+					<NextLink href='/' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiViewGrid size={24} className='' /> Home
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/contact' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMailOpen size={24} className='' />Contact
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/map' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMap size={24} className='' />Map
+							</span>
+						</Link>
+					</NextLink>
+				</nav>
+			</header>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
 					An error occured.
 				</div>
@@ -236,7 +343,7 @@ export default function DealerProductsPage({
 			const { amount, description } = values;
 
 			if (amount <= 0) {
-				notify('warning', 'Geçerli bir miktar giriniz.');
+				notify('warning', 'Please enter a valid amount.');
 				return;
 			}
 
@@ -247,7 +354,7 @@ export default function DealerProductsPage({
 				order_description: description,
 			});
 		} catch (error) {
-			notify('error', 'Ürün sepete eklenemedi.');
+			notify('error', 'Failed to add product to cart.');
 		} finally {
 			// console.log(loadState(CART).products);
 			handleClose();
@@ -260,6 +367,7 @@ export default function DealerProductsPage({
 			pathname: '/dealer',
 			query: {
 				page: 1,
+				categories: selectedCategories ?? [],
 				search: searchValue.toLowerCase() ?? '',
 			},
 		});
@@ -271,6 +379,7 @@ export default function DealerProductsPage({
 			pathname: '/dealer',
 			query: {
 				page: value ?? 1,
+				categories: selectedCategories ?? [],
 				search: searchValue.toLowerCase() ?? '',
 			},
 		});
@@ -284,9 +393,43 @@ export default function DealerProductsPage({
 		setOpen(false);
 	};
 
+	const handleCategoriesChange = (newValue) => {
+		setSelectedCategories(newValue);
+	};
+
 	if (!!errorMessage) {
 		return (
-			<Layout>
+			<Layout fullWidth>
+				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+					SILVER
+				</h1>
+				<nav className='w-full flex justify-end items-center flex-wrap'>
+					<NextLink href='/' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiViewGrid size={24} className='' /> Home
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/contact' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMailOpen size={24} className='' />Contact
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/map' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMap size={24} className='' />Map
+							</span>
+						</Link>
+					</NextLink>
+				</nav>
+			</header>
 				<div className='flex justify-center items-center mt-12'>
 					{errorMessage}
 				</div>
@@ -295,20 +438,79 @@ export default function DealerProductsPage({
 	}
 
 	return (
-		<Layout title={`${dealerName} Ürünleri`}>
+		<Layout fullWidth>	
+			<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+					SILVER
+				</h1>
+				<nav className='w-full flex justify-end items-center flex-wrap'>
+					<NextLink href='/' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiViewGrid size={24} className='' /> Home
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/contact' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMailOpen size={24} className='' />Contact
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/map' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMap size={24} className='' />Map
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/dealer/cart' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiShoppingCart size={24} className='' /> Cart
+							</span>
+						</Link>
+					</NextLink>
+
+					{!!user ? (
+						<>
+
+						<NextLink href='/dealer/profile' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
+								</span>
+							</Link>
+						</NextLink>
+						</>
+						) : (
+						<NextLink href='/dealer/login' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center  gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiLogin size={24} className='' /> Login
+								</span>
+							</Link>
+						</NextLink>
+						)}
+				</nav>
+			</header>
+
 			<div className={`px-2 md:px-12`}>
 				<section className={`mb-3 flex justify-between items-center`}>
 					<h1 className={`font-medium text-xl md:text-2xl`}>
-						{dealerName} Ürünleri{' '}
 						<span className='ml-1 pb-1'>
 							<NextLink href='/dealer/cart' passHref>
-								<Link className={`no-underline transition-colors`}>
+								<Link className={`no-underline transition-colors  flex items-center gap-x-2`}>
 									<Badge
 										badgeContent={Object.values(state?.cart ?? []).length}
 										color='secondary'
-										className='mb-1'
+										className='mb-1 text-black flex items-center gap-x-2'
 									>
-										<FiShoppingBag size={25} className='text-black' />
+										<FiShoppingBag size={24} className='text-black' /> Cart
 									</Badge>
 								</Link>
 							</NextLink>
@@ -322,12 +524,38 @@ export default function DealerProductsPage({
 					/>
 				</section>
 
-				<section className='mb-6'>
+				<section className='mb-6 grid grid-cols-12 gap-2'>
+					<div className='col-span-6 bg-white flex justify-center items-center gap-4 '>
+						<Autocomplete
+							multiple
+							id='categories-choose'
+							className='flex-grow'
+							options={categories.map(({ id, name }) => id)}
+							getOptionLabel={(option) => categories[option - 1]?.name}
+							value={selectedCategories}
+							onChange={(e, newValue) => {
+								console.log(e);
+								handleCategoriesChange(newValue);
+							}}
+							disabled={categories.length === 0}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									label={
+										categories.length !== 0 ? 'Chosen Categories' : 'No Categories Found'
+									}
+									placeholder='Choose categories...'
+								/>
+							)}
+						/>
+					</div>
+					<div className='col-span-6'>
 					<Searchy
 						value={searchValue}
 						handleSearchChange={(e) => setSearch(() => e.target.value)}
 						onSearchSubmit={handleSearch}
 					/>
+					</div>
 				</section>
 
 				<Grid
@@ -338,8 +566,8 @@ export default function DealerProductsPage({
 					alignItems='center'
 					className='px-2.5 md:px-1.5 xl:px-0 mb-4'
 				>
-					{products.map((product) => (
-						<Grid item sm={6} md={productSize} key={product.product_id}>
+					{products.map((product, i) => (
+						<Grid item sm={6} md={productSize} key={i}>
 							<Product
 								product={product}
 								size={productSize}
@@ -356,7 +584,7 @@ export default function DealerProductsPage({
 					{!!products && products.length === 0 && (
 						<div className='w-full my-12 flex justify-center items-center'>
 							<h1 className='text-2xl font-light text-red-500'>
-								Herhangi bir ürün bulamadı.
+								No products found.
 							</h1>
 						</div>
 					)}
@@ -499,38 +727,33 @@ export default function DealerProductsPage({
 
 export async function getServerSideProps({ req, query }) {
 	try {
-		const page = query?.page ?? 1;
-		const search = query?.search ?? '';
+		const { page, categories: selectedCategories, search } = query;
 
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/categories`;
+		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/products`;
+		
 		const token = req.cookies.token;
 
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/product/categories`;
-
-		const { data } = await axios.get(backendURL, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-
-		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/products-max-page`;
+		const { data } = await axios.get(backendURL);
 
 		const { data: dataMaxPage } = await axios.get(backendURLmaxPage, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
 			data: {
 				search: search ?? '',
+				categories: selectedCategories ?? [],
+				page_size: 10,
 			},
 		});
 
 		const categoryLabels = data?.categories.map(({ id, name }) => name);
 
-		const number_of_pages = dataMaxPage?.max_page;
+		const { number_of_pages } = dataMaxPage;
 
 		return {
 			props: {
 				queryPage: page || 1,
 				querySearch: search || '',
+				queryCategories: selectedCategories ?? [],
+				categories: data?.categories ?? [],
 				categoryLabels,
 				number_of_pages: number_of_pages,
 				errorMessage: '',
@@ -546,6 +769,8 @@ export async function getServerSideProps({ req, query }) {
 			props: {
 				queryPage: 1,
 				querySearch: '',
+				queryCategories: [],
+				categories: [],
 				categoryLabels: [],
 				number_of_pages: 1,
 				errorMessage: 'An error occured.',

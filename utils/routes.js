@@ -97,14 +97,12 @@ export const ignoredRouteList = [
 	'/dealer/login',
 	'/dealer/register',
 
-	// '/admin/forgot-password',
-	// '/student/confirm-new-password/[token]',
-	// '/student/reset-password/[token]',
+	'/dealer',
+	'/dealer/cart',
+	'/dealer/order-confirm',
+
 	'/dealer/forgot-password',
 	'/dealer/reset-password/[token]',
-	// '/employee/confirm-new-password/[token]',
-	// '/employee/reset-password/[token]',
-	// '/forgot',
 
 	'/404',
 	'/500',

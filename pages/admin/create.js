@@ -122,15 +122,6 @@ export default function CreateProduct() {
 
 			const { name, category, description, price } = values;
 
-			// const formData = new FormData();
-
-			// formData.append('name', name);
-			// formData.append('category_id', category);
-			// formData.append('description', description);
-			// formData.append('image', tempImageName);
-
-			notify('info', category);
-
 			const { data } = await axios.post(backendURL, {
 				name,
 				category_id: category,
@@ -265,7 +256,7 @@ export default function CreateProduct() {
 	return (
 		<Layout>
 			<h1 className={`flex-grow font-semibold text-3xl text-center`}>
-				Ürün Oluşturma Ekranı
+				Product Creation
 			</h1>
 			<div
 				className={`mt-6 px-2 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-4`}

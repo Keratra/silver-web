@@ -21,32 +21,60 @@ import { ArrowBack } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { contactSchema } from 'lib/yupmodels';
-import { loadState } from 'lib';
+import { loadState, parseJwt } from 'lib';
 
 const ContactPage = () => {
     const [open, setOpen] = useState(false);
 
     const handleContactSubmit = async (values, { setSubmitting, resetForm  }) => {
         handleClickOpen();
-        console.log(values);
-
         try {
           const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/contact`;
           
           const { name, surname, email, question } = values;
     
+          let queryValues;
+          
           const token = loadState('token')?.token;
 
-          // if user dealer, send dealer ID too
-    
-          const { data } = await axios.post(
-            backendURL,
-            {
+          if (
+            token === undefined ||
+            token === null ||
+            token === '' ||
+            token === 'null'
+          ) {
+            queryValues = {
               name: name + " " + surname,
               email,
               description: question,
               id: "",
-            },
+            };
+          } else {
+            const { id, user_type } = parseJwt(token)?.sub;
+
+            if (user_type === 'dealer') {
+              queryValues = {
+                name: name + " " + surname,
+                email,
+                description: question,
+                id,
+              };
+            } else {
+              queryValues = {
+                name: name + " " + surname,
+                email,
+                description: question,
+                id: "",
+              };
+            }
+          }
+
+          
+
+          // if user dealer, send dealer ID too
+    
+          const { data } = await axios.post(
+            backendURL, { ...queryValues },
             {
               headers: {
                 Authorization: `Bearer ${token}`,

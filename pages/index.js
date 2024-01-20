@@ -1,24 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
 import Layout from '../components/Layout';
 import Product from '@components/Product';
-import { Card, Grid, Link } from '@mui/material';
+import { Button, Card, Fab, Grid, Link } from '@mui/material';
 import NextLink from 'next/link';
 // import banner from '/public/jewel1.jpg';
 import hero from 'public/images/silver_hero1.jpg';
 import { loadState } from 'lib';
 import { useEffect, useState } from 'react';
+import { notify } from 'utils/notify';
 import axios from 'axios';
+import { HiMailOpen, HiShoppingCart, HiUserCircle, HiMap, HiLogin, HiViewGrid } from "react-icons/hi";
+
 
 export default function Home({ categories, categoryLabels, products }) {
 	const [user, setUser] = useState(false);
 
 	useEffect(() => {
-		const token = loadState('token');
+		const token = loadState('token')?.token;
 		if (!token || token === '' || token === 'null' || token === null ) {
 			setUser(() => false);
 		} else {
 			setUser(() => true);
 		}
+		// notify('info', token);
 	}, []);
 
 	// {
@@ -71,38 +75,56 @@ export default function Home({ categories, categoryLabels, products }) {
 			<div className='h-[100vh] bg-gradient-to-b from-slate-50 via-slate-50 to-slate-100'>
 				<header className='container mx-auto py-2 px-4 flex justify-between items-center select-none'>
 					<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
-						SILVER MARKET
+						SILVER
 					</h1>
-					<nav>
+					<nav className='w-full flex justify-end items-center flex-wrap'>
 						<NextLink href='/contact' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white p-4 opacity-80 hover:rounded-md transition-all'>
-									Contact
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiMailOpen size={24} className='' />Contact
 								</span>
 							</Link>
 						</NextLink>
 
 						<NextLink href='/map' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white p-4 opacity-80 hover:rounded-md transition-all'>
-									Map / Weather
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiMap size={24} className='' />Map
+								</span>
+							</Link>
+						</NextLink>
+
+						<NextLink href='/dealer' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiViewGrid size={24} className='' /> Products
+								</span>
+							</Link>
+						</NextLink>
+
+						<NextLink href='/dealer/cart' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiShoppingCart size={24} className='' /> Cart
 								</span>
 							</Link>
 						</NextLink>
 
 						{!!user ? (
-						<NextLink href='/dealer/cart' passHref>
+						<>
+						<NextLink href='/dealer/profile' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white p-4 opacity-80 hover:rounded-md transition-all'>
-									Cart
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
 								</span>
 							</Link>
 						</NextLink>
+						</>
 						) : (
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white p-4 opacity-80 hover:rounded-md transition-all'>
-									Customer Login
+								<span className='flex items-center  gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiLogin size={24} className='' /> Login
 								</span>
 							</Link>
 						</NextLink>
@@ -110,48 +132,30 @@ export default function Home({ categories, categoryLabels, products }) {
 					</nav>
 				</header>
 
-				<section className='px-4 border-dashed border'>
+				<section className='px-4 py-24' style={{ backgroundImage: `url('${hero.src}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
 					<div className='grid grid-cols-1 gap-8'>
 
-						<div className='mx-auto max-w-4xl px-4 border-dashed border'>
-							<div className='w-full text-2xl text-neutral-600 font-light text-center mt-4 -mb-7'>
+						<div className='mx-auto max-w-4xl px-8  backdrop-blur-lg backdrop-brightness-150 hover:animate-wiggle'>
+							<div className='w-full text-2xl text-neutral-800 font-normal text-center mt-4 -mb-7'>
 								Welcome to 
 							</div>
 							<h1 className='font-serif text-5xl font-medium leading-tight tracking-wide mb-6 text-center'>
 								Silver Market
 							</h1>
-							<p className='text-xl text-neutral-600 font-light mb-4 text-center'>
-								An extremely user-friendly site where you can purchase your jewelry products
+							<p className='text-xl text-neutral-800 font-normal mb-4 text-center'>
+								A place where you can purchase your jewelry products
 							</p>
-
-							<div className='flex justify-center items-center gap-12 '>
-								{!user && (
-								<NextLink href='/dealer/login' passHref>
-									<span className='cursor-pointer bg-white text-gray-800 px-2 py-2 rounded-md font-medium opacity-70 hover:opacity-100 transition-opacity'>
-										<Link className='mx-1 p-1 text-black no-underline transition-colors'>
-											<span className='text-sm md:text-base tracking-wider transition-colors select-none uppercase'>
-												Customer Login
-											</span>
-										</Link>
-									</span>
-								</NextLink>	
-								)}
-							</div>
 						</div>
-
-						{/* <div className='flex justify-center items-center select-none'>
-							<img src={hero.src} alt='Hero' className='w-full' />
-						</div> */}
 
 					</div>
 				</section>
 			
-				<section className='px-4 border-dashed border min-h-[50vh]'>
-					<h1 className='font-serif text-4xl font-medium leading-tight tracking-wide mb-6 text-center'>
+				<section className='px-4 min-h-[50vh] bg-white py-6 border-solid border-0 border-b border-neutral-300'>
+					<h1 className='font-serif text-4xl font-medium leading-tight tracking-wide mb-12 text-center'>
 						Popular Products
 					</h1>
 
-					<div className='grid grid-cols-1 gap-8'>
+					<div className='max-w-7xl mx-auto grid grid-cols-1 gap-8'>
 						<Grid
 							container
 							spacing={2}
@@ -161,7 +165,7 @@ export default function Home({ categories, categoryLabels, products }) {
 							className='px-2.5 md:px-1.5 xl:px-0 mb-4'
 						>
 							{products.map((product, i) => (
-								<Grid item sm={6} md={2} key={i}>
+								<Grid item sm={6} md={3} key={i}>
 									<Product
 										product={product}
 										size={3}
@@ -174,7 +178,7 @@ export default function Home({ categories, categoryLabels, products }) {
 										forCart
 									/>
 								</Grid>
-							))}
+							)).splice(0, 4)}
 
 							{!!products && products.length === 0 && (
 								<div className='w-full my-12 flex justify-center items-center'>
@@ -184,26 +188,92 @@ export default function Home({ categories, categoryLabels, products }) {
 								</div>
 							)}
 						</Grid>
+
+						<div className='w-full my-3 flex justify-center items-center'>
+							<Button
+								variant='contained'
+								color='primary'
+								size='large'
+								className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider normal-case`}
+							>
+								View More
+							</Button>
+						</div>
 						
 					</div>
 				</section>
 
-				<footer className='absolute bottom-0 w-full bg-black text-gray-100 py-2'>
+				
+			
+				<section className='px-4 min-h-[50vh] bg-neutral-50 py-6 border-solid border-0 border-b border-neutral-300'>
+					<h1 className='font-serif text-4xl font-medium leading-tight tracking-wide mb-12 text-center'>
+						New Products
+					</h1>
+
+					<div className='max-w-7xl mx-auto grid grid-cols-1 gap-8'>
+						<Grid
+							container
+							spacing={2}
+							direction='row'
+							justifyContent='flex-start'
+							alignItems='center'
+							className='px-2.5 md:px-1.5 xl:px-0 mb-4'
+						>
+							{products.map((product, i) => (
+								<Grid item sm={6} md={3} key={i}>
+									<Product
+										product={product}
+										size={3}
+										categories={categoryLabels}
+										fabFunc={() => {
+											handleClickOpen();
+											setSelected(() => product);
+										}}
+										hasPrice
+										forCart
+									/>
+								</Grid>
+							)).splice(0, 4)}
+
+							{!!products && products.length === 0 && (
+								<div className='w-full my-12 flex justify-center items-center'>
+									<h1 className='text-2xl font-light text-red-500'>
+										No products were found.
+									</h1>
+								</div>
+							)}
+						</Grid>
+
+						<div className='w-full my-3 flex justify-center items-center'>
+							<Button
+								variant='contained'
+								color='primary'
+								size='large'
+								className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider normal-case`}
+							>
+								View More
+							</Button>
+						</div>
+						
+					</div>
+				</section>
+
+				<footer className='w-full bg-black text-gray-100 py-2'>
 					<div className='container mx-auto flex flex-wrap justify-between px-4'>
 						<p className='text-sm'>
 							&copy; 2024 Silver Market. All rights reserved.
 						</p>
-						<nav className='text-sm'>
-							<a href='#' className='text-gray-100 hover:text-gray-300 mx-3'>
+						<nav className='text-sm flex items-center'>
+							<a href='#' className='text-gray-100 hover:text-gray-300 mx-3 transition-colors'>
 								Terms of Service
 							</a>
-							<a href='#' className='text-gray-100 hover:text-gray-300 mx-3'>
+							<a href='#' className='text-gray-100 hover:text-gray-300 mx-3 transition-colors'>
 								Privacy Policy
 							</a>
 
 							<NextLink href='/admin/login' passHref>
 								<Link className='mx-3 no-underline'>
-									<span className='text-gray-100 hover:text-gray-300'>
+									<span className='text-gray-100 hover:text-gray-300 transition-colors'>
 										Admin Login
 									</span>
 								</Link>
