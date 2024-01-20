@@ -19,7 +19,7 @@ export default function DealerResetPassword() {
 	) => {
 		try {
 			if (password !== confirmPassword) {
-				notify('warning', 'Şifreler eşleşmiyor');
+				notify('warning', 'Passwords do not match');
 				return;
 			}
 
@@ -28,7 +28,7 @@ export default function DealerResetPassword() {
 			const email_token = Router?.query?.token ?? 'something_went_wrong';
 
 			const { data } = await axios.post(
-				`${process.env.NEXT_PUBLIC_API_URL}/dealer/reset-password/${email_token}`,
+				`${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/reset-password/${email_token}`,
 				{
 					password: password,
 				},
@@ -39,7 +39,7 @@ export default function DealerResetPassword() {
 				}
 			);
 
-			notify('success', 'Şifreniz başarıyla değiştirildi');
+			notify('success', 'Your password has been successfully changed');
 			Router.replace('/dealer/login');
 		} catch (error) {
 			notify(
@@ -66,7 +66,7 @@ export default function DealerResetPassword() {
 							}}
 							className=' text-slate-500 drop-shadow-sm hover:text-slate-900 transition-colors'
 						>
-							<ArrowBack /> <span className='ml-1 mt-1'>ANASAYFAYA DÖNÜN</span>
+							<ArrowBack /> <span className='ml-1 mt-1'>RETURN TO HOMEPAGE</span>
 						</a>
 					</NextLink>
 				</div>
@@ -94,16 +94,16 @@ export default function DealerResetPassword() {
 								className={`grid grid-cols-1 gap-4 m-4 min-w-[80vw] md:min-w-[60vw] lg:min-w-[40vw] xl:min-w-[25vw] content-center place-content-center max-w-sm mx-auto px-4`}
 							>
 								<h1 className={`font-semibold text-center m-0 -mt-2`}>
-									Yeni Şifrenizi Giriniz
+									Enter Your New Password
 								</h1>
 
 								<TextField
 									fullWidth
 									id='password'
 									name='password'
-									label='Yeni Şifre'
+									label='New Password'
 									type='password'
-									placeholder='Yeni şifrenizi giriniz...'
+									placeholder='Enter your new password...'
 									className='bg-neutral-50 rounded-b-lg'
 									value={values.password}
 									onChange={handleChange}
@@ -114,9 +114,9 @@ export default function DealerResetPassword() {
 								<TextField
 									id='confirmPassword'
 									name='confirmPassword'
-									label='Tekrar Şifre'
+									label='Confirm Password'
 									type='password'
-									placeholder='Tekrar yeni şifrenizi giriniz...'
+									placeholder='Confirm your new password...'
 									fullWidth
 									className='bg-neutral-50 rounded-b-lg'
 									value={values.confirmPassword}
@@ -135,7 +135,7 @@ export default function DealerResetPassword() {
 									className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider`}
 									disabled={isSubmitting}
 								>
-									DEĞİŞTİR
+									CHANGE
 								</Button>
 							</form>
 						)}

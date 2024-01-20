@@ -95,7 +95,7 @@ export default function Login() {
 								className={`grid grid-cols-1 gap-4 m-4 min-w-[80vw] md:min-w-[60vw] lg:min-w-[40vw] xl:min-w-[25vw] content-center place-content-center max-w-sm mx-auto px-4`}
 							>
 								<h1 className={`font-semibold text-center m-0 -mt-2`}>
-									Dealer Login
+									Customer Login
 								</h1>
 
 								<TextField

@@ -12,11 +12,11 @@ export const CART_ACTIONS = {
 };
 
 export const ORDER_CATEGORIES = {
-  WAIT: 'Bekliyor',
-  PREP: 'Hazırlanıyor',
-  CARG: 'Kargoya Verildi',
-  DELI: 'Teslim Edildi',
-  CANC: 'İptal Edildi',
+  WAIT: 'Waiting',
+  PREP: 'Preparing',
+  CARG: 'Shipping',
+  DELI: 'Delivered',
+  CANC: 'Canceled',
 };
 
-export const PAYMENT_TYPES = ['Nakit', 'EFT/Havale', 'Diğer'];
+export const PAYMENT_TYPES = ['Cash', 'Credit/Bank Card', 'Other'];

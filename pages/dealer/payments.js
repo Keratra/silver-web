@@ -175,7 +175,7 @@ export async function getServerSideProps({ req, query }) {
 	try {
 		const { startDate, endDate } = query;
 
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/payment`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/payment`;
 
 		const token = req.cookies.token;
 
@@ -211,7 +211,7 @@ export async function getServerSideProps({ req, query }) {
 		console.log(error?.data);
 		return {
 			props: {
-				error: 'Bir hata oluştu.',
+				error: 'An error occured.',
 				data: { balance: 0, negative_balance: [], positive_balance: [] },
 				queryStartDate: '2022-01-01',
 				queryEndDate: new Date().toISOString().split('T')[0],

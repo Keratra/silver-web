@@ -14,7 +14,6 @@ import {
 	Typography,
 } from '@mui/material';
 import { Formik } from 'formik';
-import { registerBayiModel } from 'lib/yupmodels';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { notify } from 'utils/notify';
@@ -22,15 +21,51 @@ import { ArrowBack } from '@mui/icons-material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { contactSchema } from 'lib/yupmodels';
+import { loadState } from 'lib';
 
 const ContactPage = () => {
     const [open, setOpen] = useState(false);
 
-    const handleContactSubmit = (values, { setSubmitting, resetForm  }) => {
+    const handleContactSubmit = async (values, { setSubmitting, resetForm  }) => {
         handleClickOpen();
         console.log(values);
-        setSubmitting(false);
-        resetForm();
+
+        try {
+          const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/contact`;
+          
+          const { name, surname, email, question } = values;
+    
+          const token = loadState('token')?.token;
+
+          // if user dealer, send dealer ID too
+    
+          const { data } = await axios.post(
+            backendURL,
+            {
+              name: name + " " + surname,
+              email,
+              description: question,
+              id: "",
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          notify('success', data?.message);
+        } catch (error) {
+          notify(
+            'error',
+            error?.response?.data?.message?.message ??
+              error?.response?.data?.message ??
+              error?.message
+          );
+        } finally {
+          setSubmitting(false);
+          resetForm();
+        }
     };
 
       const handleClickOpen = () => {

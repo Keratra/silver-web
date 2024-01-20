@@ -61,12 +61,12 @@ function Searchy({
 						{!!forOrders && (
 							<FormControl fullWidth className='col-span-1 max-w-[10rem]'>
 								<InputLabel id={'search_type_label'} className={``}>
-									Sipariş Arama Türü
+									Search for
 								</InputLabel>
 								<Select
 									id='search_type'
 									name='search_type'
-									label='Sipariş Arama Türü'
+									label='Search for'
 									labelId='search_type_label'
 									className='bg-neutral-50'
 									fullWidth
@@ -78,8 +78,8 @@ function Searchy({
 									error={touched.search_type && Boolean(errors.search_type)}
 								>
 									{[
-										{ id: 1, name: 'Ürün Adı', value: true },
-										{ id: 2, name: 'Sipariş No', value: false },
+										{ id: 1, name: 'Product Name', value: true },
+										{ id: 2, name: 'Customer Email', value: false },
 									].map(({ id, name, value }) => (
 										<MenuItem key={id} value={value}>
 											{name}

@@ -85,7 +85,7 @@ export default function CreateProduct() {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -93,7 +93,7 @@ export default function CreateProduct() {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-orange-500 text-2xl font-['Roboto']">
-					Yükleniyor...
+					Loading...
 				</div>
 			</Layout>
 		);
@@ -102,7 +102,7 @@ export default function CreateProduct() {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);

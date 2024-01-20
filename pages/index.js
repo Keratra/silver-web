@@ -33,7 +33,7 @@ export default function Home() {
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white p-4 opacity-80 hover:rounded-md transition-all'>
-									Dealer Login
+									Customer Login
 								</span>
 							</Link>
 						</NextLink>
@@ -67,7 +67,7 @@ export default function Home() {
 										<span className='cursor-pointer bg-white text-gray-800 px-2 py-2 rounded-md font-medium opacity-70 hover:opacity-100 transition-opacity'>
 											<Link className='mx-1 p-1 text-black no-underline transition-colors'>
 												<span className='text-sm md:text-base tracking-wider transition-colors select-none uppercase'>
-													Dealer Login
+													Customer Login
 												</span>
 											</Link>
 										</span>

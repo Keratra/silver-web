@@ -57,7 +57,7 @@ export function OrderNavigation({ user, highlight, classExtension, children }) {
 						(highlight === 'WAIT' ? ' ' + classActiveLink : 'text-neutral-900')
 					}
 				>
-					<FiInbox size={sizeIcon} className={classIcon} /> Bekleyenler
+					<FiInbox size={sizeIcon} className={classIcon} /> WAITING
 				</Link>
 			</NextLink>
 			<NextLink href={links.PREP} passHref>
@@ -73,7 +73,7 @@ export function OrderNavigation({ user, highlight, classExtension, children }) {
 							classIcon + `${highlight === 'PREP' && ' animate-spin-slow  '}`
 						}
 					/>{' '}
-					Hazırlananlar
+					PREPARING
 				</Link>
 			</NextLink>
 			<NextLink href={links.CARG} passHref>
@@ -83,7 +83,7 @@ export function OrderNavigation({ user, highlight, classExtension, children }) {
 						(highlight === 'CARG' ? ' ' + classActiveLink : 'text-neutral-900')
 					}
 				>
-					<FiMap size={sizeIcon} className={classIcon} /> Kargolananlar
+					<FiMap size={sizeIcon} className={classIcon} /> SHIPPING
 				</Link>
 			</NextLink>
 			<NextLink href={links.DELI} passHref>
@@ -93,7 +93,7 @@ export function OrderNavigation({ user, highlight, classExtension, children }) {
 						(highlight === 'DELI' ? ' ' + classActiveLink : 'text-neutral-900')
 					}
 				>
-					<FiUserCheck size={sizeIcon} className={classIcon} /> Teslim Edilenler
+					<FiUserCheck size={sizeIcon} className={classIcon} /> DELIVERED
 				</Link>
 			</NextLink>
 			<NextLink href={links.CANC} passHref>
@@ -103,7 +103,7 @@ export function OrderNavigation({ user, highlight, classExtension, children }) {
 						(highlight === 'CANC' ? ' ' + classActiveLink : 'text-neutral-900')
 					}
 				>
-					<FiUserX size={sizeIcon} className={classIcon} /> İptal Edilenler
+					<FiUserX size={sizeIcon} className={classIcon} /> CANCELLED
 				</Link>
 			</NextLink>
 		</div>

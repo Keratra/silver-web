@@ -374,7 +374,7 @@ export default function DealerCartPage() {
 }
 
 // export async function getServerSideProps({ req }) {
-//   const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/product/categories`;
+//   const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/product/categories`;
 
 //   const token = req.cookies.token;
 

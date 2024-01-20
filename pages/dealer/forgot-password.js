@@ -22,20 +22,21 @@ export default function DealerForgotPassword() {
 			const token = loadState('token')?.token;
 
 			const { data } = await axios.post(
-				`${process.env.NEXT_PUBLIC_API_URL}/dealer/forgot-password`,
+				`${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/forgot-password`,
 				{
 					email: email,
 				},
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
 					},
 				}
 			);
 
 			notify('info', data);
 
-			notify('success', 'Şifre sıfırlama e-postası gönderildi.');
+			notify('success', 'Password reset email has been sent.');
 			Router.replace('/dealer/login');
 		} catch (error) {
 			notify(
@@ -62,7 +63,7 @@ export default function DealerForgotPassword() {
 							}}
 							className=' text-slate-500 drop-shadow-sm hover:text-slate-900 transition-colors'
 						>
-							<ArrowBack /> <span className='ml-1 mt-1'>ANASAYFAYA DÖNÜN</span>
+							<ArrowBack /> <span className='ml-1 mt-1'>RETURN TO HOMEPAGE</span>
 						</a>
 					</NextLink>
 				</div>
@@ -90,15 +91,15 @@ export default function DealerForgotPassword() {
 								className={`grid grid-cols-1 gap-4 m-4 min-w-[80vw] md:min-w-[60vw] lg:min-w-[40vw] xl:min-w-[25vw] content-center place-content-center max-w-sm mx-auto px-4`}
 							>
 								<h1 className={`font-semibold text-center m-0 -mt-2`}>
-									Hesabınızın e-posta adresini giriniz
+									Enter your account&apos;s email address
 								</h1>
 
 								<TextField
 									fullWidth
 									id='email'
 									name='email'
-									label='E-posta'
-									placeholder='E-postanızı giriniz...'
+									label='Email'
+									placeholder='Enter your email...'
 									className='bg-neutral-50 rounded-b-lg'
 									value={values.email}
 									onChange={handleChange}
@@ -114,7 +115,7 @@ export default function DealerForgotPassword() {
 									className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider`}
 									disabled={isSubmitting}
 								>
-									GÖNDER
+									SEND
 								</Button>
 							</form>
 						)}

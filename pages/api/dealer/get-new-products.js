@@ -4,8 +4,8 @@ export default async function getNewProducts(req, res) {
 	try {
 		const { page, search } = req.query;
 
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/new-product/${page}`;
-		// const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/new-product`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/new-product/${page}`;
+		// const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/new-product`;
 
 		const token = req.cookies.token;
 

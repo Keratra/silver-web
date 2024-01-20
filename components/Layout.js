@@ -38,7 +38,7 @@ const anchorClasses = `
 
 export default function Layout({ fullWidth, title, children }) {
 	const Router = useRouter();
-	const [navbarTitle, setNavbarTitle] = useState('gümüş');
+	const [navbarTitle, setNavbarTitle] = useState('silver');
 	const [titlePath, setTitlePath] = useState('/');
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [drawer, setDrawer] = useState('');

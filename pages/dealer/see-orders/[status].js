@@ -92,7 +92,7 @@ export default function DealerOrdersPage({
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -202,7 +202,7 @@ export async function getServerSideProps({ req, query }) {
 			end_date: modifiedEndDate ?? new Date().toISOString().split('T')[0],
 		};
 
-		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL}/dealer/orders-max-pages`;
+		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/orders-max-pages`;
 		const { data: dataMaxPage } = await axios.post(
 			backendURLmaxPage,
 			queryData,
@@ -215,7 +215,7 @@ export async function getServerSideProps({ req, query }) {
 
 		const { number_of_pages } = dataMaxPage;
 
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/orders/${page}`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/orders/${page}`;
 		const { data: dataOrders } = await axios.post(backendURL, queryData, {
 			headers: {
 				Authorization: `Bearer ${token}`,

@@ -159,8 +159,8 @@ export default function View({
           '
 				>
 					<DealerSelector
-						title='Bayiler'
-						emptyOptionTitle='Bir bayi seçiniz...'
+						title='Customers'
+						emptyOptionTitle='Select a customer...'
 						dealers={dealers}
 						selectedDealer={selectedDealer}
 						handleDealerChange={handleDealerChange}
@@ -172,7 +172,7 @@ export default function View({
 						<div
 							className={`mt-12 font-light text-center text-2xl text-orange-600 drop-shadow-md`}
 						>
-							Lütfen bir bayi seçiniz.
+							Please select a customer.
 						</div>
 					</Card>
 				)}
@@ -188,8 +188,8 @@ export default function View({
 						</section>
 						<section
 							className='
-            p-4
-          '
+								p-4
+							'
 						>
 							<div className='flex flex-wrap justify-center items-center gap-4 text-sm md:text-base text-slate-800'>
 								<span className='p-2 rounded-sm shadow-md bg-white '>
@@ -261,26 +261,26 @@ export default function View({
 				)}
 
 				{/* <Box className={`mx-2 mt-6`}>
-          <section className={`mt-6 mb-3 flex`}>
-            <h1 className={`flex-grow font-semibold text-3xl`}>
-              {!!selectedBayi
-                ? selectedBayi.name + ' Ürünleri'
-                : 'Bütün Ürünler'}
-            </h1>
-            <SizeSelector
-              productSize={productSize}
-              setProductSize={setProductSize}
-            />
-          </section>
-          <Grid container spacing={2}>
-            {!!selectedBayi &&
-              data.products.map((product) => (
-                <Grid item md={productSize} key={product.name}>
-                  <Product product={product} />
-                </Grid>
-              ))}
-          </Grid>
-        </Box> */}
+						<section className={`mt-6 mb-3 flex`}>
+							<h1 className={`flex-grow font-semibold text-3xl`}>
+							{!!selectedBayi
+								? selectedBayi.name + ' Ürünleri'
+								: 'Bütün Ürünler'}
+							</h1>
+							<SizeSelector
+							productSize={productSize}
+							setProductSize={setProductSize}
+							/>
+						</section>
+						<Grid container spacing={2}>
+							{!!selectedBayi &&
+							data.products.map((product) => (
+								<Grid item md={productSize} key={product.name}>
+								<Product product={product} />
+								</Grid>
+							))}
+						</Grid>
+					</Box> */}
 			</div>
 		</Layout>
 	);
@@ -379,7 +379,7 @@ export async function getServerSideProps({ req, query }) {
 				querySelectedDealer: null,
 				categoryLabels: [],
 				number_of_pages: 1,
-				errorMessage: 'Bir hata oluştu.',
+				errorMessage: 'An error occured.',
 			},
 		};
 	}

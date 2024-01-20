@@ -5,9 +5,9 @@ export default function FourOhFour() {
 	return (
 		<Layout fullWidth>
 			<div className='mt-12 text-center'>
-				<h1>404 - Sayfa bulunamadı</h1>
+				<h1>404 - Page Not Found</h1>
 				<Link href='/' className='block'>
-					<a>Anasayfaya dönün</a>
+					<a>Go back to homepage</a>
 				</Link>
 			</div>
 		</Layout>

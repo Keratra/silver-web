@@ -15,7 +15,6 @@ import {
 	Typography,
 } from '@mui/material';
 import { Formik } from 'formik';
-import { registerBayiModel } from 'lib/yupmodels';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { notify } from 'utils/notify';

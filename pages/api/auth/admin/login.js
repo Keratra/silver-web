@@ -12,9 +12,9 @@ export default async function login(req, res) {
 			email,
 			password,
 		});
+		// console.log(data);
 
 		// test
-
 		saveCookie({
 			key: 'token',
 			value: data.access_token,
@@ -27,10 +27,11 @@ export default async function login(req, res) {
 		console.log(
 			error?.response?.data?.message?.message ??
 				error?.response?.data?.message ??
-				error?.message
+				error?.message ??
+				error
 		);
 		res.status(error.response?.status || 500).json({
-			message: error.response.data.message || error || 'Something went wrong',
+			message: error?.response?.data?.message || error || 'Something went wrong',
 		});
 	}
 }

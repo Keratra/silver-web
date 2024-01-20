@@ -319,7 +319,7 @@ export async function getServerSideProps({ req, query }) {
 		console.log(error?.data);
 		return {
 			props: {
-				error: 'Bir hata oluştu.',
+				error: 'An error occured.',
 				dealers: [],
 			},
 		};

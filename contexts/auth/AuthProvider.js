@@ -55,7 +55,7 @@ function AuthProvider({ children }) {
 
 		if (isTokenExpired && userregexp.test(Router.pathname)) {
 			dispatch({ type: LOGOUTUSER });
-			notify('error', 'Lütfen tekrar giriş yapınız.');
+			notify('error', 'Please login again.');
 			if (!ignoredRouteList.includes(Router.pathname)) {
 				Router.push(`/${state?.token ? state.userType : ''}`);
 			}

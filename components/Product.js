@@ -100,23 +100,23 @@ const Product = ({
 			<Card className={`shadow-md rounded-none  bg-slate-100 text-black `}>
 				<CardMedia className='bg-white'>
 					{/* <CardMedia
-          component='img'
-          image={src}
-          title={product?.name}
-          height={100 * size}
-          className='text-center text-xl bg-gradient-to-br from-stone-600 to-stone-800  transition-transform'
-        /> */}
+					component='img'
+					image={src}
+					title={product?.name}
+					height={100 * size}
+					className='text-center text-xl bg-gradient-to-br from-stone-600 to-stone-800  transition-transform'
+					/> */}
 					{/* <div style={{ position: 'relative', width: '400px', height: '400px' }}>
-          <Image
-            width={400}
-            height={400}
-            src={src}
-            alt='Current Image'
-            placeholder='blur'
-            blurDataURL='/images/spinner.gif'
-            style={{ objectFit: 'scale-down' }}
-          />
-        </div> */}
+					<Image
+						width={400}
+						height={400}
+						src={src}
+						alt='Current Image'
+						placeholder='blur'
+						blurDataURL='/images/spinner.gif'
+						style={{ objectFit: 'scale-down' }}
+					/>
+					</div> */}
 
 					<Image
 						loader={() => src}
@@ -172,7 +172,7 @@ const Product = ({
 								<span className='box-border px-1 py-0.5 drop-shadow-md text-lg text-slate-900'>
 									{!!product?.description
 										? product?.description
-										: 'Açıklama bulunmamaktadır'}
+										: 'No description was found.'}
 								</span>
 							</Popover>
 						</div>
@@ -189,7 +189,7 @@ const Product = ({
 							
 							{product?.category_id &&
 								categories[parseInt(product?.category_id) - 1]}
-							{!!product?.price ? (
+							{!!product?.price || product?.price === 0 ? (
 								<span
 									className={`flex-auto ml-1 mt-0.5  tracking-wider text-center`}
 								>
@@ -202,7 +202,7 @@ const Product = ({
 							)}
 						</div>
 
-						<div
+						{/* <div
 							className={`my-1  text-neutral-600 text-sm text-center  drop-shadow-md`}
 						>
 							{(!product?.category_id || product?.category_id === '') && (
@@ -212,7 +212,8 @@ const Product = ({
 							)}
 							{product?.category_id &&
 								categories[parseInt(product?.category_id) - 1]}
-							{!!hasPrice ? (
+							
+							{(!!hasPrice || product?.price === 0) ? (
 								<span
 									className={`flex-auto ml-1 mt-0.5  tracking-wider text-center`}
 								>
@@ -223,49 +224,12 @@ const Product = ({
 									className={`flex-auto ml-1 mt-0.5 text-sm`}
 								></Typography>
 							)}
-						</div>
-
-						{/* <div className='flex justify-center items-center'>
-							<Fab
-								size='small'
-								className={` shadow-none text-neutral-900 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
-								onClick={handleClick}
-							>
-								<SlQuestion size={22} />
-							</Fab>
-							<Popover
-								id={id}
-								open={open}
-								anchorEl={anchorEl}
-								onClose={handleClose}
-								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'center',
-								}}
-								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'center',
-								}}
-								className=''
-							>
-								<span className='box-border px-1 py-0.5 drop-shadow-md text-lg text-slate-900'>
-									{!!product?.description
-										? product?.description
-										: 'Açıklama bulunmamaktadır'}
-								</span>
-							</Popover>
 						</div> */}
 					</CardContent>
 				</CardMedia>
 
 				{displayOnly ? null : (
 					<CardActions className={`bg-white`}>
-						{product?.is_private ? (
-							<span className='ml-1 p-0.5 pt-1 px-1 mr-1 rounded-md bg-gradient-to-tr from-rose-600 to-red-400 font-semibold text-sm tracking-widest text-slate-50 uppercase'>
-								ÖZEL ÜRÜN
-							</span>
-						) : null}
-
 						<span className={`flex-auto`} />
 
 						{!!dashboardTitle && (
@@ -282,7 +246,7 @@ const Product = ({
 									variant='extended'
 									className={`shadow-none text-neutral-900 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
 								>
-									{forCart ? <FiPlus size={24} /> : 'FİYAT TEKLİFİ AL'}
+									{forCart ? <FiPlus size={24} /> : 'N/A FUNCTION'}
 								</Fab>
 							) : (
 								<>
@@ -317,7 +281,7 @@ const Product = ({
 								}
 								className={`shadow-none text-orange-600 hover:bg-neutral-200 bg-transparent drop-shadow-md text-sm`}
 							>
-								FİYATI DEĞİŞTİR
+								CHANGE PRICE
 							</Fab>
 						)}
 					</CardActions>

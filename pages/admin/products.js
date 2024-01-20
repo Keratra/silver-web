@@ -2,7 +2,7 @@ import Layout from '@components/Layout';
 import Product from '@components/Product';
 import SizeSelector from '@components/SizeSelector';
 import Searchy from '@components/Searchy';
-import { Button, Grid, Link } from '@mui/material';
+import { Autocomplete, Button, Grid, Link, TextField } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { useState } from 'react';
@@ -16,13 +16,15 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function AdminProducts({
 	queryPage,
+	queryCategories,
 	querySearch,
 	categoryLabels,
+	raw_categories,
 	number_of_pages,
 	errorMessage,
 }) {
 	const { data, error } = useSWR(
-		`/api/admin/get-products?page=${queryPage ?? 1}&search=${
+		`/api/admin/get-products?page=${queryPage ?? 1}&categories=${queryCategories ?? []}&search=${
 			querySearch ?? ''
 		}`,
 		fetcher
@@ -33,12 +35,13 @@ export default function AdminProducts({
 	const [productSize, setProductSize] = useState(3);
 	const [searchValue, setSearch] = useState(querySearch);
 	const [page, setPage] = useState(queryPage ?? 1);
+	const [selectedCategories, setSelectedCategories] = useState(JSON.parse("[" + queryCategories + "]") ?? []);
 
 	if (error) {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -48,7 +51,7 @@ export default function AdminProducts({
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-orange-500 text-2xl font-['Roboto']">
-					Yükleniyor...
+					Loading...
 				</div>
 			</Layout>
 		);
@@ -57,7 +60,7 @@ export default function AdminProducts({
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -70,6 +73,7 @@ export default function AdminProducts({
 			pathname: '/admin/products',
 			query: {
 				page: 1,
+				categories: selectedCategories ?? [],
 				search: searchValue.toLowerCase() ?? '',
 			},
 		});
@@ -81,31 +85,34 @@ export default function AdminProducts({
 			pathname: '/admin/products',
 			query: {
 				page: value ?? 1,
+				categories: selectedCategories ?? [],
 				search: searchValue.toLowerCase() ?? '',
 			},
 		});
 	};
 
 	const handleDelete = async (id) => {
-		if (confirm('Bu ürünü silmek istediğinizden emin misiniz?')) {
+		if (confirm('Are you sure want to delete this product?')) {
 			try {
-				await axios.delete('/api/admin/delete-product', {
-					data: {
-						id,
-					},
+				await axios.post('/api/admin/delete-product', {
+					id,
 				});
 
 				Router.reload();
-				notify('success', 'Ürün başarıyla silindi');
+				notify('success', 'Product successfully deleted');
 			} catch (error) {
 				console.log(
 					error?.response?.data?.message?.message ??
 						error?.response?.data?.message ??
 						error?.message
 				);
-				notify('error', 'Ürün silinirken bir hata oluştu');
+				notify('error', 'An error occured whilst deleting the product');
 			}
 		}
+	};
+
+	const handleCategoriesChange = (newValue) => {
+		setSelectedCategories(newValue);
 	};
 
 	if (!!errorMessage) {
@@ -154,12 +161,39 @@ export default function AdminProducts({
 					/>
 				</section>
 
-				<section className='mb-6'>
+				<section className='mb-6 grid grid-cols-12 gap-2'>
+					<div className='col-span-6 bg-white flex justify-center items-center gap-4 '>
+						<Autocomplete
+							multiple
+							id='categories-choose'
+							className='flex-grow'
+							options={raw_categories.map(({ id, name }) => id)}
+							getOptionLabel={(option) => raw_categories[option - 1]?.name}
+							value={selectedCategories}
+							onChange={(e, newValue) => {
+								console.log(e);
+								handleCategoriesChange(newValue);
+							}}
+							disabled={raw_categories.length === 0}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									label={
+										raw_categories.length !== 0 ? 'Chosen Categories' : 'No Categories Found'
+									}
+									placeholder='Choose categories...'
+								/>
+							)}
+						/>
+					</div>
+
+					<div className='col-span-6'>
 					<Searchy
 						value={searchValue}
 						handleSearchChange={(e) => setSearch(() => e.target.value)}
 						onSearchSubmit={handleSearch}
 					/>
+					</div>
 				</section>
 
 				<Grid
@@ -190,22 +224,6 @@ export default function AdminProducts({
 					)}
 				</Grid>
 
-				{/* <section
-          className={`
-            grid grid-cols-12 gap-2
-          `}
-        >
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className={`col-span-12 md:col-span-${() =>
-                getProductSize()} w-[${100 * productSize}px]`}
-            >
-              <Product product={product} />
-            </div>
-          ))}
-        </section> */}
-
 				<Stack spacing={2} className='flex justify-center items-center my-6'>
 					<Pagination
 						count={number_of_pages}
@@ -225,7 +243,7 @@ export default function AdminProducts({
 
 export async function getServerSideProps({ req, query }) {
 	try {
-		const { page, search } = query;
+		const { page, categories: selectedCategories, search } = query;
 
 		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/admin/categories`;
 		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL}/admin/products`;
@@ -238,19 +256,16 @@ export async function getServerSideProps({ req, query }) {
 			},
 		});
 
-		// console.log(data)
-
 		const { data: dataMaxPage } = await axios.get(backendURLmaxPage, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 			data: {
 				search: search ?? '',
+				categories: selectedCategories ?? [],
 				page_size: 10,
 			},
 		});
-
-		// console.log(dataMaxPage)
 
 		const categoryLabels = data?.categories.map(({ id, name }) => name);
 
@@ -260,7 +275,9 @@ export async function getServerSideProps({ req, query }) {
 			props: {
 				queryPage: parseInt(page) ?? 1,
 				querySearch: search ?? '',
+				queryCategories: selectedCategories ?? [],
 				categoryLabels,
+				raw_categories: data?.categories ?? [],
 				number_of_pages: page_number,
 				errorMessage: '',
 			},
@@ -275,9 +292,11 @@ export async function getServerSideProps({ req, query }) {
 			props: {
 				queryPage: 1,
 				querySearch: '',
+				queryCategories: [],
 				categoryLabels: [],
+				raw_categories: [],
 				number_of_pages: 1,
-				errorMessage: 'Bir hata oluştu.',
+				errorMessage: 'An error occured.',
 			},
 		};
 	}

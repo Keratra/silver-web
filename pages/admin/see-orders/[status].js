@@ -11,7 +11,6 @@ import { OrderNavigation } from '@components/OrderNavigation';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DatePicker } from '@mui/x-date-pickers';
-import DealerSelector from '@components/DealerSelector';
 import { FiCheckCircle, FiXCircle } from 'react-icons/fi';
 import { RiFileExcel2Fill } from 'react-icons/ri';
 import { notify } from 'utils/notify';
@@ -20,14 +19,13 @@ const ExcelJS = require('exceljs');
 const JsBarcode = require('jsbarcode');
 import { saveAs } from 'file-saver';
 
-function handleFilterChange({ Router, startDate, endDate, selectedDealer }) {
+function handleFilterChange({ Router, startDate, endDate }) {
 	Router.push({
 		pathname: '/admin/see-orders/' + Router.query.status,
 		query: {
 			page: 1,
 			search: '',
 			isNameSearch: true,
-			selectedDealer: selectedDealer ?? null,
 			startDate: startDate.toISOString().split('T')[0] ?? '2022-01-01',
 			endDate:
 				endDate.toISOString().split('T')[0] ??
@@ -41,10 +39,8 @@ export default function AdminDealerOrdersPage({
 	queryPage,
 	querySearch,
 	queryIsNameSearch,
-	querySelectedDealer,
 	queryStartDate,
 	queryEndDate,
-	dealers,
 	orders,
 	number_of_pages,
 	error,
@@ -53,10 +49,6 @@ export default function AdminDealerOrdersPage({
 
 	const [startDate, setStartDate] = useState(new Date(queryStartDate));
 	const [endDate, setEndDate] = useState(new Date(queryEndDate));
-
-	const [selectedDealer, setSelectedDealer] = useState(
-		querySelectedDealer ?? ''
-	);
 
 	const [selectedOrders, setSelectedOrders] = useState([]);
 	const [searchValue, setSearch] = useState(querySearch);
@@ -70,7 +62,6 @@ export default function AdminDealerOrdersPage({
 			Router,
 			startDate,
 			endDate,
-			selectedDealer,
 		});
 		setSelectedOrders([]);
 		setSearch('');
@@ -78,24 +69,24 @@ export default function AdminDealerOrdersPage({
 		setSearchType(true);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [queryStatus, startDate, endDate, selectedDealer]);
+	}, [queryStatus, startDate, endDate]);
 	// don't add Router to the dependency array, it refreshes endlessly
 
 	if (error) {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
 	}
 
 	const handleAcceptOrder = async (ids) => {
-		if (confirm('Bu siparişi onaylamak istediğinizden emin misiniz?')) {
+		if (confirm('Are you sure you want to approve this?')) {
 			try {
 				if (ids?.length === 0) {
-					console.log('Seçili sipariş bulunamadı.');
+					console.log('Could not find order.');
 					return;
 				}
 
@@ -106,7 +97,7 @@ export default function AdminDealerOrdersPage({
 				await axios.post(
 					backendURL,
 					{
-						order_id: ids,
+						order_ids: ids,
 					},
 					{
 						headers: {
@@ -117,7 +108,7 @@ export default function AdminDealerOrdersPage({
 
 				// Router.reload();
 			} catch (error) {
-				notify('error', 'Sipariş onaylanamadı.');
+				notify('error', 'Order could not be approved.');
 				console.log(
 					error?.response?.data?.message?.message ??
 						error?.response?.data?.message ??
@@ -128,10 +119,10 @@ export default function AdminDealerOrdersPage({
 	};
 
 	const handleShipOrder = async (ids) => {
-		if (confirm('Bu siparişi kargolamak istediğinizden emin misiniz?')) {
+		if (confirm('Are you sure you want to ship that order?')) {
 			try {
 				if (ids?.length === 0) {
-					console.log('Seçili sipariş bulunamadı.');
+					console.log('Could not find order.');
 					return;
 				}
 
@@ -142,7 +133,7 @@ export default function AdminDealerOrdersPage({
 				await axios.post(
 					backendURL,
 					{
-						order_id: ids,
+						order_ids: ids,
 					},
 					{
 						headers: {
@@ -153,7 +144,7 @@ export default function AdminDealerOrdersPage({
 
 				Router.reload();
 			} catch (error) {
-				notify('error', 'Sipariş kargolanamadı.');
+				notify('error', 'Order could not be shipped.');
 				console.log(
 					error?.response?.data?.message?.message ??
 						error?.response?.data?.message ??
@@ -164,10 +155,10 @@ export default function AdminDealerOrdersPage({
 	};
 
 	const handleDeliverOrder = async (ids) => {
-		if (confirm('Bu siparişi teslim etmek istediğinizden emin misiniz?')) {
+		if (confirm('Are you sure you want to deliver this order?')) {
 			try {
 				if (ids?.length === 0) {
-					console.log('Seçili sipariş bulunamadı.');
+					console.log('Could not find order.');
 					return;
 				}
 
@@ -178,7 +169,7 @@ export default function AdminDealerOrdersPage({
 				await axios.post(
 					backendURL,
 					{
-						order_id: ids,
+						order_ids: ids,
 					},
 					{
 						headers: {
@@ -189,7 +180,7 @@ export default function AdminDealerOrdersPage({
 
 				Router.reload();
 			} catch (error) {
-				notify('error', 'Sipariş teslim edilemedi.');
+				notify('error', 'Order could not be delivered.');
 				console.log(
 					error?.response?.data?.message?.message ??
 						error?.response?.data?.message ??
@@ -200,10 +191,10 @@ export default function AdminDealerOrdersPage({
 	};
 
 	const handleCancelOrder = async (ids) => {
-		if (confirm('Bu siparişi iptal etmek istediğinizden emin misiniz?')) {
+		if (confirm('Are you sure you want to cancel this order?')) {
 			try {
 				if (ids?.length === 0) {
-					notify('error', 'Seçili sipariş bulunamadı.');
+					notify('error', 'Could not find order.');
 					return;
 				}
 
@@ -214,7 +205,7 @@ export default function AdminDealerOrdersPage({
 				await axios.post(
 					backendURL,
 					{
-						order_id: ids,
+						order_ids: ids,
 					},
 					{
 						headers: {
@@ -225,7 +216,7 @@ export default function AdminDealerOrdersPage({
 
 				Router.reload();
 			} catch (error) {
-				notify('error', 'Sipariş iptal edilemedi.');
+				notify('error', 'Order could not be cancelled.');
 				console.log(
 					error?.response?.data?.message?.message ??
 						error?.response?.data?.message ??
@@ -233,10 +224,6 @@ export default function AdminDealerOrdersPage({
 				);
 			}
 		}
-	};
-
-	const handleDealerChange = (e) => {
-		setSelectedDealer(e.target.value);
 	};
 
 	const handleOrderChoose = (id) => {
@@ -493,7 +480,7 @@ export default function AdminDealerOrdersPage({
 
 	const handleBarcode = async (id) => {
 		try {
-			const available = orders?.map(({ real_order_id }) => real_order_id);
+			const available = orders?.map(({ order_id }) => order_id);
 
 			if (!available.includes(parseInt(id))) {
 				throw Error('Geçersiz sipariş numarası okundu');
@@ -524,7 +511,6 @@ export default function AdminDealerOrdersPage({
 				page: 1,
 				search: searchValue.toLowerCase() ?? '',
 				isNameSearch: isNameSearch ?? true,
-				selectedDealer: selectedDealer ?? null,
 				startDate: startDate.toISOString().split('T')[0] ?? '2022-01-01',
 				endDate:
 					endDate.toISOString().split('T')[0] ??
@@ -542,7 +528,6 @@ export default function AdminDealerOrdersPage({
 				page: value ?? 1,
 				search: searchValue.toLowerCase() ?? '',
 				isNameSearch: true,
-				selectedDealer: selectedDealer ?? null,
 				startDate: startDate.toISOString().split('T')[0] ?? '2022-01-01',
 				endDate:
 					endDate.toISOString().split('T')[0] ??
@@ -563,14 +548,14 @@ export default function AdminDealerOrdersPage({
 				<section className='grid grid-cols-1 lg:grid-cols-2 gap-1 mx-2 my-1 '>
 					<div
 						className='
-            grid grid-cols-1 md:grid-cols-3 gap-1 gap-y-4
-						p-3.5
-            bg-white border-neutral-200
-            rounded-sm  shadow-md '
+							grid grid-cols-1 md:grid-cols-2 gap-1 gap-y-4
+										p-3.5
+							bg-white border-neutral-200
+							rounded-sm  shadow-md '
 					>
 						<LocalizationProvider dateAdapter={AdapterMoment}>
 							<DatePicker
-								label='Başlangıç Tarihi'
+								label='Start Date'
 								value={new Date(startDate)}
 								onChange={(newValue) => {
 									setStartDate(newValue.toDate());
@@ -579,36 +564,29 @@ export default function AdminDealerOrdersPage({
 							/>
 
 							<DatePicker
-								label='Bitiş Tarihi'
+								label='End Date'
 								value={new Date(endDate)}
 								onChange={(newValue) => {
 									setEndDate(newValue.toDate());
 								}}
 								renderInput={(params) => <TextField {...params} />}
 							/>
-
-							<DealerSelector
-								title='Bayiler'
-								dealers={dealers}
-								selectedDealer={selectedDealer}
-								handleDealerChange={handleDealerChange}
-							/>
 						</LocalizationProvider>
 					</div>
 
-					{['PREP'].includes(queryStatus) && (
+					{/* {['PREP'].includes(queryStatus) && (
 						<div
 							className='
 								p-3.5
 								bg-white border-neutral-200
 								rounded-sm  shadow-md '
 						>
-							<TextField
+							 <TextField
 								id='barcode'
 								name='barcode'
-								label='Barkod Okuma Yeri'
+								label='Barcodes'
 								type='number'
-								placeholder='Barkod okutunuz...'
+								placeholder='Scan barcode...'
 								fullWidth
 								value={barcode}
 								onChange={(e) => setBarcode(e.target.value)}
@@ -620,13 +598,13 @@ export default function AdminDealerOrdersPage({
 								}}
 							/>
 						</div>
-					)}
+					)} */}
 
 					{['WAIT', 'PREP', 'CARG'].includes(queryStatus) && (
 						<div
 							className={`
-								grid grid-cols-${queryStatus === 'PREP' ? '4' : '3'} 
-								gap-1 gap-y-4 ${queryStatus === 'PREP' ? 'col-span-1 lg:col-span-2' : ''}
+								grid grid-cols-${queryStatus === 'PREP' ? '3' : '3'} 
+								gap-1 gap-y-4
 								p-3.5
 								bg-white border-neutral-200
 								rounded-sm  shadow-md 
@@ -650,8 +628,8 @@ export default function AdminDealerOrdersPage({
 								)}
 
 								{selectedOrders?.length !== 0
-									? `${selectedOrders?.length} sipariş seçildi`
-									: 'Sipariş seçiniz...'}
+									? `${selectedOrders?.length} orders chosen`
+									: 'Choose orders...'}
 							</div>
 
 							<div className='flex justify-center items-center'>
@@ -668,7 +646,7 @@ export default function AdminDealerOrdersPage({
 										className='align-middle group-hover:animate-wiggle'
 										size={28}
 									/>{' '}
-									<span className='ml-2 mr-1 text-sm md:text-lg'>İptal</span>
+									<span className='ml-2 mr-1 text-sm md:text-lg'>Cancel</span>
 								</Fab>
 							</div>
 
@@ -696,36 +674,25 @@ export default function AdminDealerOrdersPage({
 									/>{' '}
 									<span className='ml-2 mr-1 text-sm md:text-lg'>
 										{queryStatus === 'WAIT'
-											? 'Onayla'
+											? 'Approve'
 											: queryStatus === 'PREP'
-											? 'Kargola'
+											? 'Ship'
 											: queryStatus === 'CARG'
-											? 'Teslim Et'
+											? 'Deliver'
 											: ''}
 									</span>
 								</Fab>
 							</div>
 
-							{queryStatus === 'PREP' && (
-								<div className='flex justify-center items-center'>
-									<Fab
-										variant='extended'
-										className='normal-case bg-sky-800 hover:bg-sky-600 text-lg text-white transition-colors'
-										onClick={() => handleDeliverOrder(selectedOrders)}
-									>
-										<span className='ml-2 mr-1 text-sm md:text-lg'>Teslim</span>
-									</Fab>
-								</div>
-							)}
 						</div>
 					)}
 					{!['WAIT', 'PREP', 'CARG'].includes(queryStatus) && (
 						<div
 							className={`
-								grid grid-cols-${queryStatus === 'PREP' ? '4' : '3'} gap-1 gap-y-4
+								grid grid-cols-${queryStatus === 'PREP' ? '3' : '3'} gap-1 gap-y-4
 								p-3.5
 								bg-white border-neutral-200
-								rounded-sm  shadow-md 
+								rounded-sm  shadow-md
 							`}
 						/>
 					)}
@@ -747,7 +714,7 @@ export default function AdminDealerOrdersPage({
 						orders={orders}
 						orderStatus={queryStatus}
 						positiveActionFunction={handleAcceptOrder}
-						positiveActionText={'Onayla'}
+						positiveActionText={'Approve'}
 						cancelFunction={handleCancelOrder}
 						handleAccept={handleAcceptOrder}
 						handleShip={handleShipOrder}
@@ -782,7 +749,6 @@ export async function getServerSideProps({ req, query }) {
 		const page = parseInt(query?.page) ?? 1;
 		const search = query?.search ?? '';
 		const isNameSearch = query?.isNameSearch ?? true;
-		const selectedDealer = query?.selectedDealer ?? '';
 		const startDate = query?.startDate ?? null;
 		const endDate = query?.endDate ?? null;
 
@@ -793,7 +759,6 @@ export async function getServerSideProps({ req, query }) {
 		// 	page,
 		// 	search,
 		// 	isNameSearch,
-		// 	selectedDealer,
 		// 	startDate,
 		// 	endDate,
 		// });
@@ -808,26 +773,17 @@ export async function getServerSideProps({ req, query }) {
 			isNameSearch === 'true' || isNameSearch === true ? true : false;
 
 		const order_status = ORDER_CATEGORIES[status];
-
-		const backendURLDealer = `${process.env.NEXT_PUBLIC_API_URL}/admin/dealer-names`;
-		const { data: dealersData } = await axios.get(backendURLDealer, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-
-		const dealers = dealersData.dealer_names;
-
+		
 		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL}/admin/orders-max-page`;
 		const { data: dataMaxPage } = await axios.post(
 			backendURLmaxPage,
 			{
-				id_search: !searchName ? search : '',
+				page_size: 10,
+				dealer_search: !searchName ? search : '',
 				product_search: !!searchName ? search : '',
 				order_status,
 				start_date: startDate ?? '2022-01-01',
 				end_date: modifiedEndDate ?? new Date().toISOString().split('T')[0],
-				dealer_id: selectedDealer ?? '',
 			},
 			{
 				headers: {
@@ -835,18 +791,18 @@ export async function getServerSideProps({ req, query }) {
 				},
 			}
 		);
-		const { number_of_pages } = dataMaxPage;
-
+		const { page_number: number_of_pages } = dataMaxPage;
+		
 		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/admin/orders/${page}`;
 		const { data: dataOrders } = await axios.post(
 			backendURL,
 			{
-				id_search: !searchName ? search : '',
+				page_size: 10,
+				dealer_search: !searchName ? search : '',
 				product_search: !!searchName ? search : '',
 				order_status,
 				start_date: startDate ?? '2022-01-01',
 				end_date: modifiedEndDate ?? new Date().toISOString().split('T')[0],
-				dealer_id: selectedDealer ?? '',
 			},
 			{
 				headers: {
@@ -857,16 +813,16 @@ export async function getServerSideProps({ req, query }) {
 
 		const { orders } = dataOrders;
 
+		// console.log(orders[0]);
+
 		return {
 			props: {
 				queryStatus: status,
 				queryPage: page ?? 1,
 				querySearch: search ?? '',
 				queryIsNameSearch: isNameSearch ?? true,
-				querySelectedDealer: selectedDealer ?? null,
 				queryStartDate: startDate ?? '2022-01-01',
 				queryEndDate: endDate ?? new Date().toISOString().split('T')[0],
-				dealers,
 				orders,
 				number_of_pages,
 			},
@@ -883,10 +839,8 @@ export async function getServerSideProps({ req, query }) {
 				queryPage: 1,
 				querySearch: '',
 				queryIsNameSearch: true,
-				querySelectedDealer: null,
 				queryStartDate: '2022-01-01',
 				queryEndDate: new Date().toISOString().split('T')[0],
-				dealers: [],
 				orders: [],
 				number_of_pages: 0,
 				error: true,
@@ -894,18 +848,3 @@ export async function getServerSideProps({ req, query }) {
 		};
 	}
 }
-
-// const api = axios.create({
-// 	baseURL: process.env.NEXT_PUBLIC_API_URL,
-// 	headers: {
-// 		'Content-Type': 'multipart/form-data',
-// 	},
-// });
-
-// // usage
-// const backendURL = `/admin/orders/${page}`;
-// const { data } = await api.post(backendURL, formData, {
-// 	headers: {
-// 		Authorization: `Bearer ${token}`,
-// 	},
-// });

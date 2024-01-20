@@ -14,6 +14,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { AiOutlineBorder, AiFillCheckSquare } from 'react-icons/ai';
+import { groupBy } from 'lodash';
 
 function Row({
 	row,
@@ -26,10 +27,23 @@ function Row({
 	handleCancel,
 	orderStatus,
 	forDealers,
+	totalPrice,
 }) {
 	const [open, setOpen] = useState(false);
 
 	const paintGray = doPaintGray ? 'bg-slate-50' : '';
+
+
+	const { order_id, orders } = row["0"];
+
+	const { cargo_brand, cargo_id, created_at, dealer, dealer_id, description, order_status } = orders;
+
+	const { address, city, country, email, name: cName, phone } = dealer;
+
+
+
+	// const { name: pName, price } = products;
+	// const localTotalPrice = price * quantity;
 
 	return (
 		<Fragment>
@@ -43,11 +57,11 @@ function Row({
 				{!!handleOrderChoose && (
 					<TableCell>
 						<span
-							onClick={() => handleOrderChoose(row?.real_order_id)}
+							onClick={() => handleOrderChoose(order_id)}
 							className='mb-1 py-0.5 cursor-pointer transition-colors'
 						>
 							<span className={``}>
-								{selectedOrders?.find((elem) => elem === row?.real_order_id) ? (
+								{selectedOrders?.find((elem) => elem === order_id) ? (
 									<AiFillCheckSquare size={24} className='align-middle' />
 								) : (
 									<AiOutlineBorder size={24} className='align-middle' />
@@ -71,18 +85,13 @@ function Row({
 				)}
 
 				<TableCell component='th' scope='row'>
-					{row?.order_id}
+					{order_id}
 				</TableCell>
 
-				{!forDealers && <TableCell>{row?.dealer_name}</TableCell>}
+				{!forDealers && <TableCell>{email}</TableCell>}
 
-				<TableCell>{row?.product_name}</TableCell>
-				<TableCell align='right'>{row?.quantity}</TableCell>
 				<TableCell align='right' className='tracking-wider'>
-					{formatPrice(row?.product_price)}
-				</TableCell>
-				<TableCell align='right' className='tracking-wider'>
-					{formatPrice(row?.total_price)}
+					{!!totalPrice && formatPrice(totalPrice)}
 				</TableCell>
 
 				{/* Aksiyon Buttonları */}
@@ -90,26 +99,26 @@ function Row({
 					<TableCell className='flex flex-wrap justify-evenly items-center gap-2'>
 						<Button
 							className={`
-                    py-2 pb-1 px-4 rounded-full
-                    bg-rose-700 hover:bg-rose-600
-                    normal-case text-white text-xs md:text-sm
-                    shadow-lg
-                  `}
-							onClick={() => handleCancel([row?.real_order_id])}
+								py-2 pb-1 px-4 rounded-full
+								bg-rose-700 hover:bg-rose-600
+								normal-case text-white text-xs md:text-sm
+								shadow-lg
+							`}
+							onClick={() => handleCancel([order_id])}
 						>
-							İptal Et
+							Cancel
 						</Button>
 
 						<Button
 							className={`
-                    py-2 pb-1 px-4 rounded-full
-                    bg-emerald-700 hover:bg-emerald-600
-                    normal-case text-white text-xs md:text-sm
-                    shadow-lg
-                  `}
-							onClick={() => handleAccept([row?.real_order_id])}
+								py-2 pb-1 px-4 rounded-full
+								bg-emerald-700 hover:bg-emerald-600
+								normal-case text-white text-xs md:text-sm
+								shadow-lg
+							`}
+							onClick={() => handleAccept([order_id])}
 						>
-							Onayla
+							Approve
 						</Button>
 					</TableCell>
 				)}
@@ -118,38 +127,38 @@ function Row({
 					<TableCell className='flex flex-wrap justify-evenly items-center gap-2'>
 						<Button
 							className={`
-                    py-2 pb-1 px-4 rounded-full
-                    bg-rose-700 hover:bg-rose-600
-                    normal-case text-white text-xs md:text-sm
-                    shadow-lg
-                  `}
-							onClick={() => handleCancel([row?.real_order_id])}
+								py-2 pb-1 px-4 rounded-full
+								bg-rose-700 hover:bg-rose-600
+								normal-case text-white text-xs md:text-sm
+								shadow-lg
+							`}
+							onClick={() => handleCancel([order_id])}
 						>
-							İptal Et
+							Cancel
 						</Button>
 
 						<Button
 							className={`
-                    py-2 pb-1 px-4 rounded-full
-                    bg-emerald-700 hover:bg-emerald-600
-                    normal-case text-white text-xs md:text-sm
-                    shadow-lg
-                  `}
-							onClick={() => handleShip([row?.real_order_id])}
+								py-2 pb-1 px-4 rounded-full
+								bg-emerald-700 hover:bg-emerald-600
+								normal-case text-white text-xs md:text-sm
+								shadow-lg
+							`}
+							onClick={() => handleShip([order_id])}
 						>
-							Kargola
+							Ship
 						</Button>
 
 						<Button
 							className={`
-                  py-2 pb-1 px-4 rounded-full
-                  bg-sky-700 hover:bg-sky-600
-                  normal-case text-white text-xs md:text-sm
-                  shadow-lg
-                `}
-							onClick={() => handleDeliver([row?.real_order_id])}
+							py-2 pb-1 px-4 rounded-full
+							bg-sky-700 hover:bg-sky-600
+							normal-case text-white text-xs md:text-sm
+							shadow-lg
+							`}
+							onClick={() => handleDeliver([order_id])}
 						>
-							Teslim Et
+							Deliver
 						</Button>
 					</TableCell>
 				)}
@@ -158,26 +167,26 @@ function Row({
 					<TableCell className='flex flex-wrap justify-evenly items-center gap-2'>
 						<Button
 							className={`
-                    py-2 pb-1 px-4 rounded-full
-                    bg-rose-700 hover:bg-rose-600
-                    normal-case text-white text-xs md:text-sm
-                    shadow-lg
-                  `}
-							onClick={() => handleCancel([row?.real_order_id])}
+								py-2 pb-1 px-4 rounded-full
+								bg-rose-700 hover:bg-rose-600
+								normal-case text-white text-xs md:text-sm
+								shadow-lg
+							`}
+							onClick={() => handleCancel([order_id])}
 						>
-							İptal Et
+							Cancel
 						</Button>
 
 						<Button
 							className={`
-                    py-2 pb-1 px-4 rounded-full
-                    bg-emerald-700 hover:bg-emerald-600
-                    normal-case text-white text-xs md:text-sm
-                    shadow-lg
-                  `}
-							onClick={() => handleDeliver([row?.real_order_id])}
+								py-2 pb-1 px-4 rounded-full
+								bg-emerald-700 hover:bg-emerald-600
+								normal-case text-white text-xs md:text-sm
+								shadow-lg
+							`}
+							onClick={() => handleDeliver([order_id])}
 						>
-							Teslim Et
+							Deliver
 						</Button>
 					</TableCell>
 				)}
@@ -195,32 +204,48 @@ function Row({
 							<Table size='small' aria-label='details' className='shadow-md'>
 								<TableHead className='bg-slate-200'>
 									<TableRow>
-										<TableCell align='center'>Bayi</TableCell>
-										<TableCell align='center'>Email</TableCell>
-										<TableCell align='center'>Telefon</TableCell>
-										<TableCell align='center'>Adres</TableCell>
-										<TableCell align='center'>Şehir</TableCell>
-										<TableCell align='center'>Ülke</TableCell>
+										<TableCell align='center'>Product Name</TableCell>
+										<TableCell align='center'>Quantity</TableCell>
+										<TableCell align='center'>Unit Price</TableCell>
+										<TableCell align='center'>Total</TableCell>
 									</TableRow>
 								</TableHead>
 
 								<TableBody>
-									<TableRow>
-										<TableCell align='center'>{row?.dealer_name}</TableCell>
-										<TableCell align='center'>{row?.dealer_email}</TableCell>
-										<TableCell align='center'>{row?.dealer_phone}</TableCell>
-										<TableCell align='center'>{row?.dealer_address}</TableCell>
-										<TableCell align='center'>{row?.dealer_city}</TableCell>
-										<TableCell align='center'>{row?.dealer_country}</TableCell>
-									</TableRow>
+									{Object.values(row).slice(0, -1).map(({ products, quantity, totalPrice: localTotalPrice }, i) => (
+										<TableRow key={i}>
+											<TableCell align='center'>{products?.name}</TableCell>
+											<TableCell align='center'>{quantity}</TableCell>
+											<TableCell align='center'>{formatPrice(products?.price)}</TableCell>
+											<TableCell align='center'>{formatPrice(localTotalPrice)}</TableCell>
+										</TableRow>
+									))}
 								</TableBody>
 							</Table>
 
-							<div className='my-4 flex flex-col justify-center items-center text-lg text-center gap-2'>
-								<span className=' font-semibold px-1 uppercase border-solid border-0 border-b '>
-									Açıklama
-								</span>{' '}
-								{row?.description}
+							<div className='flex justify-around items-start gap-4'>
+								<div className='my-4 flex flex-col justify-center items-center text-lg text-center gap-2'>
+									<span className=' font-semibold px-1 uppercase border-solid border-0 border-b '>
+										ORDER DESCRIPTION
+									</span>{' '}
+									{description}
+								</div>
+								<div className='my-4 flex flex-col justify-center items-center text-lg text-center gap-2'>
+									<span className=' font-semibold px-1 uppercase border-solid border-0 border-b '>
+										CUSTOMER DESCRIPTION
+									</span>{' '}
+									<span>
+										{cName}{' '}
+										<span className='ml-4 font-light'>
+										{phone}
+									</span>
+									</span>
+									
+									<div className='font-light'>
+										{address}, {city} / {country}
+									</div>
+									
+								</div>
 							</div>
 						</Box>
 					</Collapse>
@@ -251,10 +276,45 @@ export function OrderDisplayCard({
 				<div
 					className={`mt-12 font-light text-center text-2xl text-rose-400 drop-shadow-md`}
 				>
-					Bu türden sipariş bulunamamaktadır.
+					No orders found.
 				</div>
 			</Card>
 		);
+
+	let groupedOrders = Object.entries(groupBy(orders, 'order_id')).map(([key, value]) => {
+		return { ...value };
+	});
+
+	groupedOrders = groupedOrders.map(
+		(orde) => Object.values(orde).map(
+			(ord) => (
+				{
+					...ord,
+					totalPrice: ord.products.price * ord.quantity
+				}
+			)
+		)
+	);
+
+	const orderTotalPrice = groupedOrders.map((order) => {
+		return order.reduce((acc, curr) => {
+			return acc + curr.totalPrice;
+		}
+		, 0);
+	});
+
+	groupedOrders = groupedOrders.map((order, i) => {
+		return {
+			...order,
+			totalPrice: orderTotalPrice[i]
+		}
+	});
+
+	const order_ids = Object.entries(groupBy(orders, 'order_id')).map(([key, value]) => {
+		return { ...value };
+	}).map(
+		(orde) => orde[0].order_id
+	);
 
 	return (
 		<TableContainer component={Paper} className='mb-12'>
@@ -265,12 +325,12 @@ export function OrderDisplayCard({
 							<TableCell>
 								<span
 									onClick={() =>
-										handleChooseAll(orders.map((order) => order.real_order_id))
+										handleChooseAll(order_ids)
 									}
 									className='mb-1 py-0.5 cursor-pointer transition-colors'
 								>
 									<span className={``}>
-										{selectedOrders?.length === orders?.length ? (
+										{selectedOrders?.length === order_ids?.length ? (
 											<AiFillCheckSquare size={24} className='align-middle' />
 										) : (
 											<AiOutlineBorder size={24} className='align-middle' />
@@ -280,19 +340,16 @@ export function OrderDisplayCard({
 							</TableCell>
 						)}
 
-						{!forDealers && <TableCell>Detaylar</TableCell>}
-						<TableCell>Sipariş No</TableCell>
-						{!forDealers && <TableCell>Bayi</TableCell>}
-						<TableCell>Ürün</TableCell>
-						<TableCell align='right'>Adet</TableCell>
-						<TableCell align='right'>Birim Fiyat</TableCell>
-						<TableCell align='right'>Toplam Fiyat</TableCell>
+						{!forDealers && <TableCell>Details</TableCell>}
+						<TableCell>Order No</TableCell>
+						{!forDealers && <TableCell>Customer</TableCell>}
+						<TableCell align='right'>Order Total</TableCell>
 						{['WAIT', 'PREP', 'CARG'].includes(orderStatus) && <TableCell />}
 					</TableRow>
 				</TableHead>
 
 				<TableBody>
-					{orders.map((ord, i) => (
+					{groupedOrders.map((ord, i) => (
 						<Row
 							key={i}
 							row={ord}
@@ -305,6 +362,7 @@ export function OrderDisplayCard({
 							handleCancel={handleCancel}
 							orderStatus={orderStatus}
 							forDealers={!!forDealers}
+							totalPrice={ord.totalPrice}
 						/>
 					))}
 				</TableBody>
@@ -312,21 +370,3 @@ export function OrderDisplayCard({
 		</TableContainer>
 	);
 }
-
-// Row.propTypes = {
-// 	row: PropTypes.shape({
-// 		calories: PropTypes.number.isRequired,
-// 		carbs: PropTypes.number.isRequired,
-// 		fat: PropTypes.number.isRequired,
-// 		history: PropTypes.arrayOf(
-// 			PropTypes.shape({
-// 				amount: PropTypes.number.isRequired,
-// 				customerId: PropTypes.string.isRequired,
-// 				date: PropTypes.string.isRequired,
-// 			})
-// 		).isRequired,
-// 		name: PropTypes.string.isRequired,
-// 		price: PropTypes.number.isRequired,
-// 		protein: PropTypes.number.isRequired,
-// 	}).isRequired,
-// };

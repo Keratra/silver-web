@@ -20,7 +20,6 @@ export default async function getDealerOrders(req, res) {
 		const page = query?.page ?? '1';
 		const search = query?.search ?? '';
 		const isNameSearch = query?.isNameSearch ?? true;
-		const selectedDealer = query?.selectedDealer ?? '';
 		const startDate = query?.startDate ?? null;
 		const endDate = query?.endDate ?? null;
 
@@ -31,7 +30,6 @@ export default async function getDealerOrders(req, res) {
 			page,
 			search,
 			isNameSearch,
-			selectedDealer,
 			startDate,
 			endDate,
 		});
@@ -54,18 +52,16 @@ export default async function getDealerOrders(req, res) {
 			'end_date',
 			modifiedEndDate ?? new Date().toISOString().split('T')[0]
 		);
-		formData.append('dealer_id', selectedDealer ?? '');
 
 		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL}/admin/orders-max-page`;
 		const { data: dataMaxPage } = await axios.post(
 			backendURLmaxPage,
 			{
-				id_search: !searchName ? search : '',
+				dealer_search: !searchName ? search : '',
 				product_search: !!searchName ? search : '',
 				order_status: ORDER_CATEGORIES.WAIT,
 				start_date: startDate ?? '2022-01-01',
 				end_date: modifiedEndDate ?? new Date().toISOString().split('T')[0],
-				dealer_id: selectedDealer ?? '',
 			},
 			{
 				headers: {
@@ -73,8 +69,8 @@ export default async function getDealerOrders(req, res) {
 				},
 			}
 		);
-		const { number_of_pages } = dataMaxPage;
-
+		const { page_number: number_of_pages } = dataMaxPage;
+		
 		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/admin/orders/${page}`;
 		const { data: dataOrders } = await axios.post(
 			backendURL,
@@ -84,7 +80,6 @@ export default async function getDealerOrders(req, res) {
 				order_status: ORDER_CATEGORIES.WAIT,
 				start_date: startDate ?? '2022-01-01',
 				end_date: modifiedEndDate ?? new Date().toISOString().split('T')[0],
-				dealer_id: selectedDealer ?? '',
 			},
 			{
 				headers: {
@@ -96,7 +91,6 @@ export default async function getDealerOrders(req, res) {
 		// queryPage: page || 1,
 		// querySearch: search || '',
 		// queryIsNameSearch: isNameSearch ?? true,
-		// querySelectedDealer: selectedDealer ?? null,
 		// queryStartDate: startDate ?? '2022-01-01',
 		// queryEndDate: endDate ?? new Date().toISOString().split('T')[0],
 
@@ -104,7 +98,6 @@ export default async function getDealerOrders(req, res) {
 		//   queryPage: 1,
 		//   querySearch: '',
 		//   queryIsNameSearch: true,
-		//   querySelectedDealer: null,
 		//   queryStartDate: '2022-01-01',
 		//   queryEndDate: new Date().toISOString().split('T')[0],
 		//   data: {},

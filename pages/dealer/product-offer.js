@@ -39,7 +39,7 @@ export default function CreateProductOffer({ categories, labels }) {
 			//   ...values,
 			// });
 
-			const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/products/offer`;
+			const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/products/offer`;
 
 			const { name, category, description } = values;
 
@@ -261,7 +261,7 @@ export default function CreateProductOffer({ categories, labels }) {
 }
 
 export async function getServerSideProps({ req }) {
-	const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/product/categories`;
+	const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/product/categories`;
 
 	const token = req.cookies.token;
 

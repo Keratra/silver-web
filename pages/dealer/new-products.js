@@ -37,7 +37,7 @@ export default function DealerNewProductsPage({
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -45,7 +45,7 @@ export default function DealerNewProductsPage({
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-orange-500 text-2xl font-['Roboto']">
-					Yükleniyor...
+					Loading...
 				</div>
 			</Layout>
 		);
@@ -54,7 +54,7 @@ export default function DealerNewProductsPage({
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -64,7 +64,7 @@ export default function DealerNewProductsPage({
 
 	const handlePriceOffer = async (product_id) => {
 		try {
-			const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/new-product/offer`;
+			const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/new-product/offer`;
 
 			const { token } = loadState('token');
 
@@ -181,7 +181,7 @@ export async function getServerSideProps({ req, query }) {
 
 		const token = req.cookies.token;
 
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/product/categories`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/product/categories`;
 
 		const { data } = await axios.get(backendURL, {
 			headers: {
@@ -189,7 +189,7 @@ export async function getServerSideProps({ req, query }) {
 			},
 		});
 
-		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL}/dealer/new-product-max-pages`;
+		const backendURLmaxPage = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/new-product-max-pages`;
 
 		const { data: dataMaxPage } = await axios.get(backendURLmaxPage, {
 			headers: {
@@ -229,7 +229,7 @@ export async function getServerSideProps({ req, query }) {
 				querySearch: '',
 				categoryLabels: [],
 				number_of_pages: 1,
-				errorMessage: 'Bir hata oluştu.',
+				errorMessage: 'An error occured.',
 			},
 		};
 	}

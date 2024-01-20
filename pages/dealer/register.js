@@ -14,7 +14,7 @@ import {
 	Typography,
 } from '@mui/material';
 import { Formik } from 'formik';
-import { registerBayiModel } from 'lib/yupmodels';
+import { registerCustomerModel } from 'lib/yupmodels';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { notify } from 'utils/notify';
@@ -23,16 +23,15 @@ import country_cities from 'public/static/country_cities.json';
 
 const classInput = 'bg-neutral-50 rounded-b-lg';
 
-export default function Register({ brands }) {
+export default function Register() {
 	const Router = useRouter();
 
 	const handleRegister = async (
-		{ invite_key, name, address, city, country, phone, email, password },
+		{ name, address, city, country, phone, email, password },
 		{ setSubmitting }
 	) => {
 		try {
 			const { data } = await axios.post('/api/auth/dealer/register', {
-				invite_key,
 				name,
 				address,
 				city,
@@ -84,8 +83,8 @@ export default function Register({ brands }) {
 					className={`p-4 shadow-lg hover:shadow-xl transition-all rounded-md`}
 				>
 					<Formik
-						initialValues={registerBayiModel.initials}
-						validationSchema={registerBayiModel.schema}
+						initialValues={registerCustomerModel.initials}
+						validationSchema={registerCustomerModel.schema}
 						onSubmit={handleRegister}
 					>
 						{({
@@ -104,7 +103,7 @@ export default function Register({ brands }) {
 									variant='h4'
 									className={`md:col-span-2 font-semibold text-center`}
 								>
-									Dealer Register
+									Customer Register
 								</Typography>
 
 								<TextField
@@ -120,48 +119,11 @@ export default function Register({ brands }) {
 									helperText={touched.email && errors.email}
 								/>
 
-								{/* <FormControl fullWidth>
-									<InputLabel id={'admin_id_label'} className={``}>
-										Marka
-									</InputLabel>
-									<Select
-										id='admin_id'
-										name='admin_id'
-										label='Marka'
-										labelId='admin_id_label'
-										className='bg-neutral-50'
-										fullWidth
-										value={values.admin_id}
-										onChange={handleChange}
-										error={touched.admin_id && Boolean(errors.admin_id)}
-										disabled={brands?.length === 0}
-									>
-										{brands.map(({ id, brand }) => (
-											<MenuItem key={id} value={id}>
-												{brand}
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl> */}
-
-								<TextField
-									id='invite_key'
-									name='invite_key'
-									label='Invitation Code'
-									placeholder='Enter your code here...'
-									className={classInput}
-									fullWidth
-									value={values.invite_key}
-									onChange={handleChange}
-									error={touched.invite_key && Boolean(errors.invite_key)}
-									helperText={touched.invite_key && errors.invite_key}
-								/>
-
 								<TextField
 									id='name'
 									name='name'
 									label='Name'
-									placeholder='Enter your dealer name...'
+									placeholder='Enter your name...'
 									className={classInput}
 									fullWidth
 									value={values.name}
@@ -175,7 +137,7 @@ export default function Register({ brands }) {
 									name='phone'
 									label='Phone Number'
 									placeholder='Enter your phone number...'
-									className={'md:col-span-2 ' + classInput}
+									className={'md:col-span-1 ' + classInput}
 									fullWidth
 									value={values.phone}
 									onChange={handleChange}
@@ -304,29 +266,29 @@ export default function Register({ brands }) {
 	);
 }
 
-export async function getServerSideProps(context) {
-	try {
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/register`;
+// export async function getServerSideProps(context) {
+// 	try {
+// 		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/register`;
 
-		const { data } = await axios.get(backendURL);
+// 		const { data } = await axios.get(backendURL);
 
-		const { brands } = data;
+// 		const { brands } = data;
 
-		return {
-			props: {
-				brands,
-			},
-		};
-	} catch (error) {
-		console.log(
-			error?.response?.data?.message?.message ??
-				error?.response?.data?.message ??
-				error?.message
-		);
-		return {
-			props: {
-				brands: [],
-			},
-		};
-	}
-}
+// 		return {
+// 			props: {
+// 				brands,
+// 			},
+// 		};
+// 	} catch (error) {
+// 		console.log(
+// 			error?.response?.data?.message?.message ??
+// 				error?.response?.data?.message ??
+// 				error?.message
+// 		);
+// 		return {
+// 			props: {
+// 				brands: [],
+// 			},
+// 		};
+// 	}
+// }

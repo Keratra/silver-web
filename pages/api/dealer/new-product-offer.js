@@ -3,7 +3,7 @@ import FormData from 'form-data';
 
 export default async function createProduct(req, res) {
 	try {
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/new-product/offer`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/new-product/offer`;
 
 		const { product_id } = req.body;
 

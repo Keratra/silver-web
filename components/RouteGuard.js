@@ -26,11 +26,11 @@ export default function RouteGuard({ children }) {
 		if (!isIgnored && !token && !isAuthenticated) {
 			router.push('/');
 			// router.push(`/${tokenDetails?.sub.user_type || state.userType}`);
-			// notify('warning', 'Lütfen tekrar giriş yapınız');
+			// notify('warning', 'Please login again.');
 		} else if (!isIgnored && isTokenExpired) {
 			router.push('/');
 			// router.push(`/${tokenDetails?.sub.user_type || state.userType}`);
-			notify('warning', 'Lütfen tekrar giriş yapınız');
+			notify('warning', 'Please login again.');
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated, token]);

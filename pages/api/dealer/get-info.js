@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default async function getNewProducts(req, res) {
 	try {
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/info`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/info`;
 
 		const token = req.cookies.token;
 

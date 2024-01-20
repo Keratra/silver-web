@@ -40,7 +40,7 @@ export default function ViewPriceRequests({ categoryLabels }) {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto'] text-center">
-					Bir hata oluştu.
+					An error occured.
 				</div>
 			</Layout>
 		);
@@ -48,7 +48,7 @@ export default function ViewPriceRequests({ categoryLabels }) {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-orange-500 text-2xl font-['Roboto'] text-center">
-					Yükleniyor...
+					Loading...
 				</div>
 			</Layout>
 		);
@@ -57,7 +57,7 @@ export default function ViewPriceRequests({ categoryLabels }) {
 		return (
 			<Layout>
 				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto'] text-center">
-					Bir hata oluştu. <br /> Lütfen sonra tekrar deneyin.
+					An error occured. <br /> Please try again.
 				</div>
 			</Layout>
 		);

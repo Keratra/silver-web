@@ -235,7 +235,7 @@ export default function DealerPaymentsPage({
 						<div
 							className={`mt-12 font-light text-center text-2xl text-amber-800`}
 						>
-							Lütfen bir bayi seçiniz.
+							Please select a customer.
 						</div>
 					</Card>
 				)}
@@ -354,7 +354,7 @@ export async function getServerSideProps({ req, query }) {
 		console.log(error?.data);
 		return {
 			props: {
-				error: 'Bir hata oluştu.',
+				error: 'An error occured.',
 				data: { balance: 0, negative_balance: [], positive_balance: [] },
 				dealers: [],
 				queryPage: 1,

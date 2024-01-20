@@ -53,7 +53,7 @@ export default function DealerOrderConfirmPage() {
 
 	const handleOrderSubmit = async ({ description }, { setSubmitting }) => {
 		try {
-			const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/create-order`;
+			const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/create-order`;
 
 			const { token } = loadState('token');
 
@@ -324,7 +324,7 @@ export default function DealerOrderConfirmPage() {
 }
 
 // export async function getServerSideProps({ req }) {
-//   const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/dealer/product/categories`;
+//   const backendURL = `${process.env.NEXT_PUBLIC_API_URL_DEALER}/dealer/product/categories`;
 
 //   const token = req.cookies.token;
 

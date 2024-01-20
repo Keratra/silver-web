@@ -8,8 +8,8 @@ export default async function deleteProduct(req, res) {
 		const { id } = req.body;
 
 		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/admin/product/delete/${id}`;
-
-		const { data } = await axios.delete(backendURL, {
+		
+		const { data } = await axios.get(backendURL, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},

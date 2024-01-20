@@ -2,26 +2,19 @@ import axios from 'axios';
 
 export default async function getProducts(req, res) {
 	try {
-		const { page, categories, search } = req.query;
-
-		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/admin/products/${page}`;
+		const backendURL = `${process.env.NEXT_PUBLIC_API_URL}/admin/dealers`;
 
 		const token = req.cookies.token;
 
-		const { data } = await axios.post(
+		const { data } = await axios.get(
 			backendURL,
-			{
-				search: search ?? '',
-				categories: JSON.parse("[" + categories + "]") ?? [],
-				page_size: 10,
-			},
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json',
 				},
 			}
 		);
+        
 
 		// console.log(data);
 
