@@ -261,6 +261,32 @@ export default function Layout({ fullWidth, title, children }) {
 						} `}
 					>
 						{children}
+
+						{!!fullWidth && (
+							<footer className='w-full bg-black text-gray-100 py-2'>
+								<div className='flex flex-wrap justify-between px-4'>
+									<p className='text-sm'>
+										&copy; 2024 Silver Market. All rights reserved.
+									</p>
+									<nav className='text-sm flex items-center'>
+										<a href='#' className='text-gray-100 hover:text-gray-300 mx-3 transition-colors'>
+											Terms of Service
+										</a>
+										<a href='#' className='text-gray-100 hover:text-gray-300 mx-3 transition-colors'>
+											Privacy Policy
+										</a>
+
+										<NextLink href='/admin/login' passHref>
+											<Link className='mx-3 no-underline'>
+												<span className='text-gray-100 hover:text-gray-300 transition-colors'>
+													Admin Login
+												</span>
+											</Link>
+										</NextLink>
+									</nav>
+								</div>
+							</footer>
+						)}
 					</Container>
 				</Box>
 			</Box>

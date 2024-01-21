@@ -77,7 +77,7 @@ export const routes = [
 export const dealerPages = [
 	'Products',
 	'Profile',
-	'Your Orders',
+	'Order History',
 ];
 export const adminPages = [
 	'Dashboard',

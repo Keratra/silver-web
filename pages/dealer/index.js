@@ -4,6 +4,7 @@ import SizeSelector from '@components/SizeSelector';
 import Searchy from '@components/Searchy';
 import {
 	Autocomplete,
+	Box,
 	Button,
 	Dialog,
 	DialogContent,
@@ -15,14 +16,15 @@ import {
 	Stack,
 	TextareaAutosize,
 	TextField,
+	Typography,
 } from '@mui/material';
-import { FiTrash, FiShoppingBag } from 'react-icons/fi';
+import { FiTrash, FiShoppingBag, FiShoppingCart } from 'react-icons/fi';
 import { useState, useReducer, useEffect } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import useSWR from 'swr';
-import { loadState, saveState, formatPrice } from 'lib';
+import { loadState, saveState, formatPrice, fetcher, reducer } from 'lib';
 import { productCartModel } from 'lib/yupmodels';
 import { CART, CART_ACTIONS } from 'utils/constants';
 import { Formik } from 'formik';
@@ -31,152 +33,37 @@ import { notify } from 'utils/notify';
 import { v4 as uuidv4 } from 'uuid';
 import { HiMailOpen, HiShoppingCart, HiUserCircle, HiMap, HiLogin, HiViewGrid } from "react-icons/hi";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
-export function reducer(state, action) {
-	let newState;
-	let newCart;
-	let currentAmount;
-	let newAmount;
-	let new_id;
-	switch (action.type) {
-		case CART_ACTIONS.CREATE:
-			if (
-				action.newProduct?.product_id === null ||
-				action.newProduct?.product_id === undefined
-			)
-				return state;
-
-			new_id = uuidv4();
-
-			newState = {
-				...state,
-				cart: {
-					...state.cart,
-					[new_id]: [
-						{
-							...action.newProduct,
-							order_description: action.order_description,
-							cart_id: new_id,
-						},
-						action.amount,
-					],
-				},
-			};
-
-			console.log(newState.cart);
-
-			saveState(CART, newState);
-			return newState;
-
-		case CART_ACTIONS.ADD: // it is increment now
-			if (
-				action.newProduct?.product_id === null ||
-				action.newProduct?.product_id === undefined
-			)
-				return state;
-
-			if (
-				Object.keys(state.cart ?? []).includes(
-					action.newProduct.cart_id.toString()
-				)
-			) {
-				// console.log('item already in cart ' + action.newProduct.product_id);
-				currentAmount = state.cart[action.newProduct.cart_id][1] ?? 0;
-				newAmount = currentAmount + 1;
-				newState = {
-					...state,
-					cart: {
-						...state.cart,
-						[action.newProduct.cart_id]: [action.newProduct, newAmount],
-					},
-				};
-			} else {
-				// console.log('item not in cart' + action.newProduct.product_id);
-				newState = {
-					...state,
-					cart: {
-						...state.cart,
-						[action.newProduct.cart_id.toString()]: [action.newProduct, 1],
-					},
-				};
-			}
-			// console.log(
-			//   Object.values(newState.cart).map((elem) => elem[0].product_id)
-			// );
-			saveState(CART, newState);
-			return newState;
-
-		case CART_ACTIONS.DECREMENT:
-			if (
-				action.newProduct?.product_id === null ||
-				action.newProduct?.product_id === undefined ||
-				state.cart[action.newProduct.cart_id][1] === 1
-			)
-				return state;
-
-			if (
-				Object.keys(state.cart ?? []).includes(
-					action.newProduct.cart_id.toString()
-				)
-			) {
-				// console.log('item already in cart ' + action.newProduct.product_id);
-				currentAmount = state.cart[action.newProduct.cart_id][1] ?? 0;
-
-				newAmount = currentAmount - 1;
-				newState = {
-					...state,
-					cart: {
-						...state.cart,
-						[action.newProduct.cart_id]: [action.newProduct, newAmount],
-					},
-				};
-			} else {
-				newState = state;
-			}
-			// console.log(
-			//   Object.values(newState.cart).map((elem) => elem[0].product_id)
-			// );
-			saveState(CART, newState);
-			return newState;
-
-		case CART_ACTIONS.DELETE:
-			if (
-				action.newProduct?.product_id === null ||
-				action.newProduct?.product_id === undefined
-			)
-				return state;
-
-			if (
-				Object.keys(state.cart ?? []).includes(
-					action.newProduct.cart_id.toString()
-				)
-			) {
-				newCart = state.cart;
-				delete newCart[action.newProduct.cart_id];
-
-				newState = {
-					...state,
-					cart: {
-						...newCart,
-					},
-				};
-			} else {
-				newState = state;
-			}
-
-			saveState(CART, newState);
-			return newState;
-
-		case CART_ACTIONS.EMPTY:
-			newState = { ...state, cart: {} };
-			saveState(CART, newState);
-			return newState;
-
-		default:
-			return state;
-	}
-}
+const InfoBox = ({ title, info, colSpan = '1' }) => (
+	<Box
+		className={`
+      col-span-full md:col-span-${colSpan}
+      p-6 rounded-md
+      hover:scale-[105%]
+      bg-slate-50
+      shadow-md
+      text-center break-words
+      transition-all
+    `}
+	>
+		<Typography
+			className={`
+        -mt-3 mb-4 -ml-2
+        font-light text-md text-left
+        text-amber-800
+      `}
+		>
+			{title}
+		</Typography>
+		<p
+			className={`
+        mt-3 mb-3
+        text-md text-center
+      `}
+		>
+			{info}
+		</p>
+	</Box>
+);
 
 export default function DealerProductsPage({
 	queryPage,
@@ -207,8 +94,22 @@ export default function DealerProductsPage({
 		} else {
 			setUser(() => true);
 		}
-		// notify('info', token);
 	}, []);
+
+	useEffect(() => {
+		if (selected.showSkeleton) return;
+
+		const fetchData = async () => {
+			try {
+				const response = await fetch(`/api/dealer/get-a-product?id=${selected?.id}`);
+				const data = await response.json();
+			} catch (error) {
+				console.error('Error fetching product information:', error);
+			}
+		};
+
+		fetchData();
+	}, [selected]);
 
 	const Router = useRouter();
 
@@ -222,8 +123,9 @@ export default function DealerProductsPage({
 	if (error)
 		return (
 			<Layout fullWidth>
-				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<div className='w-full'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
@@ -252,7 +154,8 @@ export default function DealerProductsPage({
 					</NextLink>
 				</nav>
 			</header>
-				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
+			</div>
+				<div className="w-full min-h-screen mt-12 flex justify-start items-center text-red-400 text-2xl font-['Roboto']">
 					An error occured.
 				</div>
 			</Layout>
@@ -260,8 +163,9 @@ export default function DealerProductsPage({
 	if (!data)
 		return (
 			<Layout fullWidth>
-				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<div className='w-full'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
@@ -290,7 +194,8 @@ export default function DealerProductsPage({
 					</NextLink>
 				</nav>
 			</header>
-				<div className="w-full h-[30vh] flex justify-center items-center text-orange-500 text-2xl font-['Roboto']">
+			</div>
+				<div className="w-full min-h-screen mt-12 flex justify-center items-center text-neutral-700 text-4xl font-['Roboto']">
 					Loading...
 				</div>
 			</Layout>
@@ -299,8 +204,9 @@ export default function DealerProductsPage({
 	if (!!data.message) {
 		return (
 			<Layout fullWidth>
-				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<div className='w-full'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
@@ -329,18 +235,21 @@ export default function DealerProductsPage({
 					</NextLink>
 				</nav>
 			</header>
-				<div className="w-full h-[30vh] flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
+			</div>
+				<div className="w-full min-h-screen mt-12 flex justify-center items-center text-red-400 text-2xl font-['Roboto']">
 					An error occured.
 				</div>
 			</Layout>
 		);
 	}
 
-	const { dealer_name: dealerName, products } = data;
+	const { products } = data;
 
 	const handleAdd = async (values, { setSubmitting }) => {
 		try {
-			const { amount, description } = values;
+			const { amount } = values;
+
+			notify('info', amount + ' ' + selected?.name + ' added to cart.');
 
 			if (amount <= 0) {
 				notify('warning', 'Please enter a valid amount.');
@@ -348,10 +257,9 @@ export default function DealerProductsPage({
 			}
 
 			dispatch({
-				type: CART_ACTIONS.CREATE,
+				type: CART_ACTIONS.ADD,
 				newProduct: selected,
 				amount,
-				order_description: description,
 			});
 		} catch (error) {
 			notify('error', 'Failed to add product to cart.');
@@ -439,14 +347,15 @@ export default function DealerProductsPage({
 
 	return (
 		<Layout fullWidth>	
-			<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<div className='w-full'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
-				<nav className='w-full flex justify-end items-center flex-wrap'>
+				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 								<HiViewGrid size={24} className='' /> Home
 							</span>
 						</Link>
@@ -454,7 +363,7 @@ export default function DealerProductsPage({
 
 					<NextLink href='/contact' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 								<HiMailOpen size={24} className='' />Contact
 							</span>
 						</Link>
@@ -462,7 +371,7 @@ export default function DealerProductsPage({
 
 					<NextLink href='/map' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 								<HiMap size={24} className='' />Map
 							</span>
 						</Link>
@@ -470,8 +379,19 @@ export default function DealerProductsPage({
 
 					<NextLink href='/dealer/cart' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-							<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
-								<HiShoppingCart size={24} className='' /> Cart
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiShoppingCart size={24} className='' /> Cart 
+								{Object.values(state.cart ?? [])
+									.map((elem) => elem[1])
+									.reduce((partialSum, a) => partialSum + a, 0) !== 0 ? (
+									<span className=' text-slate-900'>
+										(
+										{Object.values(state.cart ?? [])
+											.map((elem) => elem[1])
+											.reduce((partialSum, a) => partialSum + a, 0)}
+										)
+									</span>
+								) : null}
 							</span>
 						</Link>
 					</NextLink>
@@ -481,7 +401,7 @@ export default function DealerProductsPage({
 
 						<NextLink href='/dealer/profile' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 									<HiUserCircle size={24} className='' /> Profile
 								</span>
 							</Link>
@@ -490,7 +410,7 @@ export default function DealerProductsPage({
 						) : (
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='flex items-center  gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<span className='flex items-center  gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 									<HiLogin size={24} className='' /> Login
 								</span>
 							</Link>
@@ -498,8 +418,8 @@ export default function DealerProductsPage({
 						)}
 				</nav>
 			</header>
-
-			<div className={`px-2 md:px-12`}>
+			</div>
+			<div className={`max-w-7xl mx-auto px-2 md:px-6 min-h-screen`}>
 				<section className={`mb-3 flex justify-between items-center`}>
 					<h1 className={`font-medium text-xl md:text-2xl`}>
 						<span className='ml-1 pb-1'>
@@ -510,7 +430,7 @@ export default function DealerProductsPage({
 										color='secondary'
 										className='mb-1 text-black flex items-center gap-x-2'
 									>
-										<FiShoppingBag size={24} className='text-black' /> Cart
+										<FiShoppingBag size={24} className='text-black' />
 									</Badge>
 								</Link>
 							</NextLink>
@@ -562,7 +482,7 @@ export default function DealerProductsPage({
 					container
 					spacing={2}
 					direction='row'
-					justifyContent='flex-start'
+					justifyContent='center'
 					alignItems='center'
 					className='px-2.5 md:px-1.5 xl:px-0 mb-4'
 				>
@@ -590,45 +510,6 @@ export default function DealerProductsPage({
 					)}
 				</Grid>
 
-				{/* <div className='grid grid-cols-3 gap-3 place-items-center my-12'>
-					<Fab
-						variant='extended'
-						className={`
-                place-self-start
-                bg-rose-700 hover:bg-rose-600
-                text-white text-xl tracking-wider normal-case
-              `}
-						onClick={handleEmpty}
-					>
-						<FiTrash size={22} className='mr-2' /> Sil
-					</Fab>
-
-					<NextLink href='/dealer/cart' passHref>
-						<Link className={`no-underline transition-colors`}>
-							<Fab
-								variant='extended'
-								className={`
-                bg-neutral-200  hover:bg-white 
-                text-black text-xl tracking-wider normal-case
-              `}
-							>
-								<FiShoppingCart size={22} className='mr-2' /> Sepet{' '}
-								{Object.values(state.cart ?? [])
-									.map((elem) => elem[1])
-									.reduce((partialSum, a) => partialSum + a, 0) !== 0 ? (
-									<span className='ml-1 text-slate-900'>
-										(
-										{Object.values(state.cart ?? [])
-											.map((elem) => elem[1])
-											.reduce((partialSum, a) => partialSum + a, 0)}
-										)
-									</span>
-								) : null}
-							</Fab>
-						</Link>
-					</NextLink>
-				</div> */}
-
 				<Stack spacing={2} className='flex justify-center items-center my-6'>
 					<Pagination
 						count={number_of_pages}
@@ -642,10 +523,22 @@ export default function DealerProductsPage({
 					/>
 				</Stack>
 
-				<Dialog fullWidth maxWidth='sm' open={open} onClose={handleClose}>
-					<DialogContent className='my-12 p-4 '>
-						<section>
-							<Formik
+
+				<Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
+					<DialogContent className=' p-4 '>
+						<section className='grid grid-cols-2 gap-4'>
+							<div>
+								<Product product={{ id: selected.id, image: selected.image }} sendOnlyImage />
+							</div>
+							<div className='grid grid-cols-2 gap-4'>
+								<InfoBox title='Product Name' info={selected.name} colSpan='2' />
+								<InfoBox title='Price' info={formatPrice(selected.price)} colSpan='1' />
+								<InfoBox title='Category' info={categoryLabels[parseInt(selected.category_id) - 1]} colSpan='1' />
+								<InfoBox title='Description' info={selected.description} colSpan='2' />
+							</div>
+						</section>
+						<div className='mt-6'>
+						<Formik
 								initialValues={productCartModel.initials}
 								validationSchema={productCartModel.schema}
 								onSubmit={handleAdd}
@@ -658,51 +551,25 @@ export default function DealerProductsPage({
 									handleSubmit,
 									isSubmitting,
 								}) => (
-									<form
-										onSubmit={handleSubmit}
-										className={`grid grid-cols-1 gap-6 content-center place-content-center max-w-sm mx-auto`}
-									>
-										<span
-											className={`text-3xl font-semibold text-center text-gray-700 drop-shadow-md`}
-										>
-											{selected?.name}
-										</span>
-
+									<form onSubmit={handleSubmit} className={`grid grid-cols-2 gap-6 content-center place-content-center `} >
 										<TextField
 											id='amount'
 											name='amount'
-											label='Miktar'
+											label='Quantity'
 											type='number'
-											placeholder='Miktarı giriniz...'
+											placeholder='Enter the quantity...'
 											fullWidth
 											value={values.amount}
 											onChange={handleChange}
 											error={touched.amount && Boolean(errors.amount)}
 											helperText={touched.amount && errors.amount}
+											InputProps={{
+												style: {
+													fontSize: '24px',
+													textAlign: 'center',
+												},
+											}}
 										/>
-
-										<TextareaAutosize
-											id='description'
-											name='description'
-											placeholder='Sipariş için açıklama giriniz...'
-											maxLength={500}
-											minRows={3}
-											maxRows={5}
-											className={`p-2 bg-slate-100 border-neutral-400 hover:border-black rounded-md font-sans text-base resize-y ${
-												touched.description && Boolean(errors.description)
-													? 'border-rose-500 hover:border-rose-600'
-													: ''
-											} `}
-											value={values.description}
-											onChange={handleChange}
-											error={touched.description && errors.description}
-										/>
-
-										<p className='-my-4 ml-3 text-xs text-rose-600'>
-											{errors.description &&
-												touched.description &&
-												errors.description}
-										</p>
 
 										<Button
 											variant='contained'
@@ -712,12 +579,12 @@ export default function DealerProductsPage({
 											className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider normal-case`}
 											disabled={isSubmitting}
 										>
-											Sepete Ekle
+											Add to Cart
 										</Button>
 									</form>
 								)}
 							</Formik>
-						</section>
+						</div>
 					</DialogContent>
 				</Dialog>
 			</div>

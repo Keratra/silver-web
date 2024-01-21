@@ -20,3 +20,5 @@ export const ORDER_CATEGORIES = {
 };
 
 export const PAYMENT_TYPES = ['Cash', 'Credit/Bank Card', 'Other'];
+
+export const CARGO_BRANDS = ['UPS', 'DHL', 'Aras Kargo', 'MNG Kargo', 'PTT Kargo', 'Sürat Kargo', 'Yurtiçi Kargo', 'Other'];

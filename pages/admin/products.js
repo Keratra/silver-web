@@ -200,7 +200,7 @@ export default function AdminProducts({
 					container
 					spacing={2}
 					direction='row'
-					justifyContent='flex-start'
+					justifyContent='center'
 					alignItems='center'
 					className=''
 				>

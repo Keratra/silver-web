@@ -95,7 +95,7 @@ function AuthProvider({ children }) {
 			...initialState,
 		});
 
-		saveState(CART, { cart: {} });
+		// saveState(CART, { cart: {} });
 
 		dispatch({
 			type: LOGOUTUSER,

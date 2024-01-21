@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '@components/Layout';
 import NextLink from 'next/link';
 import {
@@ -22,9 +22,20 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { contactSchema } from 'lib/yupmodels';
 import { loadState, parseJwt } from 'lib';
+import { HiMailOpen, HiShoppingCart, HiUserCircle, HiMap, HiLogin, HiViewGrid } from "react-icons/hi";
 
 const ContactPage = () => {
     const [open, setOpen] = useState(false);
+    const [user, setUser] = useState(false);
+	
+    useEffect(() => {
+      const token = loadState('token')?.token;
+      if (!token || token === '' || token === 'null' || token === null ) {
+        setUser(() => false);
+      } else {
+        setUser(() => true);
+      }
+    }, []);
 
     const handleContactSubmit = async (values, { setSubmitting, resetForm  }) => {
         handleClickOpen();
@@ -106,7 +117,61 @@ const ContactPage = () => {
 
   return (
     <Layout fullWidth>
-    <div className='absolute'>
+      <div className='w-full'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
+				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+					SILVER
+				</h1>
+				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
+					<NextLink href='/' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiViewGrid size={24} className='' /> Home
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/map' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiMap size={24} className='' />Map
+							</span>
+						</Link>
+					</NextLink>
+
+					<NextLink href='/dealer/cart' passHref>
+						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<HiShoppingCart size={24} className='' /> Cart
+							</span>
+						</Link>
+					</NextLink>
+
+					{!!user ? (
+						<>
+
+						<NextLink href='/dealer/profile' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
+								</span>
+							</Link>
+						</NextLink>
+						</>
+						) : (
+						<NextLink href='/dealer/login' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center  gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiLogin size={24} className='' /> Login
+								</span>
+							</Link>
+						</NextLink>
+						)}
+				</nav>
+			</header>
+			</div>
+
+    {/* <div className='absolute'>
         <div className='relative top-2 left-2'>
             <NextLink href='/' passHref>
                 <a
@@ -121,7 +186,8 @@ const ContactPage = () => {
                 </a>
             </NextLink>
         </div>
-    </div>
+    </div> */}
+
     <div className="min-h-screen flex items-center justify-center">
     <Card className="p-4 shadow-lg hover:shadow-xl transition-all rounded-md">
       <Formik

@@ -208,12 +208,12 @@ export default function ProductDetailsPage({
 						<div className={`grid grid-cols-2 gap-5 max-w-lg mx-auto`}>
 							<Button
 								className={`
-                col-span-2  
-                py-3 px-12
-                bg-stone-300 hover:bg-stone-400
-                text-black text-xl tracking-wider
-                normal-case
-              `}
+									col-span-2  
+									py-3 px-12
+									bg-stone-300 hover:bg-stone-400
+									text-black text-xl tracking-wider
+									normal-case
+								`}
 								onClick={() => setPage(1)}
 							>
 								UPDATE INFORMATION
