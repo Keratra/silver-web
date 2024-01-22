@@ -5,7 +5,7 @@ import { Box, Button, Card, Dialog, DialogContent, Fab, Grid, Link, TextField, T
 import NextLink from 'next/link';
 // import banner from '/public/jewel1.jpg';
 import hero from 'public/images/silver_hero1.jpg';
-import { loadState, saveState, formatPrice, fetcher, reducer } from 'lib';
+import { loadState, saveState, formatPrice, parseJwt, fetcher, reducer } from 'lib';
 import { CART, CART_ACTIONS } from 'utils/constants';
 import { useEffect, useReducer, useState } from 'react';
 import { notify } from 'utils/notify';
@@ -19,7 +19,7 @@ const InfoBox = ({ title, info, colSpan = '1' }) => (
 	<Box
 		className={`
       col-span-full md:col-span-${colSpan}
-      p-6 rounded-md
+      p-2 sm:p-6 rounded-md
       hover:scale-[105%]
       bg-slate-50
       shadow-md
@@ -29,7 +29,7 @@ const InfoBox = ({ title, info, colSpan = '1' }) => (
 	>
 		<Typography
 			className={`
-        -mt-3 mb-4 -ml-2
+        sm:-mt-3 mb-2 sm:mb-4 sm:-ml-2
         font-light text-md text-left
         text-amber-800
       `}
@@ -38,7 +38,7 @@ const InfoBox = ({ title, info, colSpan = '1' }) => (
 		</Typography>
 		<p
 			className={`
-        mt-3 mb-3
+        mt-1 sm:mt-3 mb-1 sm:mb-3
         text-md text-center
       `}
 		>
@@ -63,8 +63,13 @@ export default function Home({ categories, categoryLabels, products }) {
 			setUser(() => false);
 		} else {
 			setUser(() => true);
+			if (parseJwt(token)?.sub?.user_type === 'admin') {
+				setUser(() => "admin");
+			}
 		}
 		// notify('info', token);
+
+		// notify('info', JSON.stringify(parseJwt(token)));
 
 		setRandomCategories(() => getRandomCategories(categories, products));
 	}, []);
@@ -114,7 +119,7 @@ export default function Home({ categories, categoryLabels, products }) {
 		const categoryCount = categories.length;
 
 		const categoriesWithProducts = categories.filter(category =>
-			products.filter(product => product.category_id === category.id).length >= 1
+			products.filter(product => product.category_id === category.id).length >= 2
 		);
 
 		if (categoriesWithProducts.length === 1) {
@@ -183,11 +188,15 @@ export default function Home({ categories, categoryLabels, products }) {
 	return (
 		<Layout fullWidth>
 			<div className='min-h-[100vh] bg-gradient-to-b from-slate-50 via-slate-50 to-slate-100'>
-				<header className='py-2 px-4 flex justify-between items-center select-none'>
+				<header className='py-2 px-4 flex flex-col sm:flex-row justify-between items-center select-none'>
+					<NextLink href='/' passHref>
+					<Link className='no-underline'>
 					<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 						SILVER
 					</h1>
-					<nav className='w-full flex justify-end items-center flex-wrap'>
+					</Link>
+					</NextLink>
+					<nav className='w-full flex justify-center sm:justify-end items-center flex-wrap'>
 						<NextLink href='/dealer' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -220,7 +229,15 @@ export default function Home({ categories, categoryLabels, products }) {
 							</Link>
 						</NextLink>
 
-						{!!user ? (
+						{!!user ? ( user === "admin" ? (
+						<NextLink href='/admin/settings' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
+								</span>
+							</Link>
+						</NextLink>
+							) : (
 						<NextLink href='/dealer/profile' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -228,7 +245,7 @@ export default function Home({ categories, categoryLabels, products }) {
 								</span>
 							</Link>
 						</NextLink>
-						) : (
+						)) : (
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='flex items-center  gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -244,39 +261,39 @@ export default function Home({ categories, categoryLabels, products }) {
 					<div className='grid grid-cols-1 gap-8'>
 
 						<div className='mx-auto max-w-4xl px-8  backdrop-blur-lg backdrop-brightness-150 hover:animate-wiggle'>
-							<div className='w-full text-2xl text-neutral-800 font-normal text-center mt-4 -mb-7'>
+							<div className='w-full text-lg sm:text-2xl text-neutral-800 font-normal text-center mt-4 -mb-3 sm:-mb-7'>
 								Welcome to 
 							</div>
-							<h1 className='font-serif text-5xl font-medium leading-tight tracking-wide mb-6 text-center'>
+							<h1 className='font-serif text-4xl sm:text-5xl font-medium leading-tight tracking-wide mb-6 text-center'>
 								Silver Market
 							</h1>
-							<p className='text-xl text-neutral-800 font-normal mb-4 text-center'>
-								A place where you can purchase excellent jewelry products
+							<p className='text-base sm:text-xl text-neutral-800 font-normal mb-4 text-center'>
+								A place where you can purchase excellent jewelry
 							</p>
 						</div>
 
 					</div>
 				</section>
 			
-				<section className='px-4 min-h-[50vh] bg-white py-6 border-solid border-0 border-b border-neutral-300'>
-					<h1 className='font-serif text-4xl font-medium leading-tight tracking-wide mb-12 text-center'>
+				<section className='px-1 sm:px-2 md:px-4 min-h-[50vh] bg-white py-6 border-solid border-0 border-b border-neutral-300'>
+					<h1 className='font-serif text-3xl sm:text-4xl font-medium leading-tight tracking-wide mb-12 text-center'>
 						Our {randomCategories[0]?.name} Products
 					</h1>
 
 					<div className='max-w-7xl mx-auto grid grid-cols-1 gap-8'>
 						<Grid
 							container
-							spacing={2}
+							spacing={1}
 							direction='row'
 							justifyContent='center'
 							alignItems='center'
-							className='px-2.5 md:px-1.5 xl:px-0 mb-4'
+							className='px-0.5 md:px-1.5 xl:px-0 mb-4'
 						>
 							{products
 								.filter(product => product.category_id === randomCategories[0]?.id)
 								.slice(0, 4)
 								.map((product, i) => (
-								<Grid item sm={6} md={3} key={i}>
+								<Grid item xs={6} sm={6} md={3} key={i}>
 									<Product
 										product={product}
 										size={3}
@@ -312,24 +329,24 @@ export default function Home({ categories, categoryLabels, products }) {
 
 				{randomCategories.length > 1 && (
 				<section className='px-4 min-h-[50vh] bg-neutral-50 py-6 border-solid border-0 border-b border-neutral-300'>
-					<h1 className='font-serif text-4xl font-medium leading-tight tracking-wide mb-12 text-center'>
+					<h1 className='font-serif text-3xl sm:text-4xl font-medium leading-tight tracking-wide mb-12 text-center'>
 						Our {randomCategories[1]?.name} Products
 					</h1>
 
 					<div className='max-w-7xl mx-auto grid grid-cols-1 gap-8'>
 						<Grid
 							container
-							spacing={2}
+							spacing={1}
 							direction='row'
 							justifyContent='center'
 							alignItems='center'
-							className='px-2.5 md:px-1.5 xl:px-0 mb-4'
+							className='px-0.5 md:px-1.5 xl:px-0 mb-4'
 						>
 							{products
 								.filter(product => product.category_id === randomCategories[1]?.id)
 								.slice(0, 4)
 								.map((product, i) => (
-								<Grid item sm={6} md={3} key={i}>
+								<Grid item xs={6} sm={6} md={3} key={i}>
 									<Product
 										product={product}
 										size={3}
@@ -366,7 +383,7 @@ export default function Home({ categories, categoryLabels, products }) {
 
 				<Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
 					<DialogContent className=' p-4 '>
-						<section className='grid grid-cols-2 gap-4'>
+						<section className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 							<div>
 								<Product product={{ id: selected.id, image: selected.image }} sendOnlyImage />
 							</div>
@@ -416,7 +433,7 @@ export default function Home({ categories, categoryLabels, products }) {
 											color='primary'
 											size='large'
 											type='submit'
-											className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider normal-case`}
+											className={`bg-[#212021] hover:bg-gray-600 font-medium text-sm sm:text-lg tracking-wider normal-case`}
 											disabled={isSubmitting}
 										>
 											Add to Cart

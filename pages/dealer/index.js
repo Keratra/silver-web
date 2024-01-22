@@ -24,7 +24,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import useSWR from 'swr';
-import { loadState, saveState, formatPrice, fetcher, reducer } from 'lib';
+import { loadState, saveState, formatPrice, parseJwt, fetcher, reducer } from 'lib';
 import { productCartModel } from 'lib/yupmodels';
 import { CART, CART_ACTIONS } from 'utils/constants';
 import { Formik } from 'formik';
@@ -37,7 +37,7 @@ const InfoBox = ({ title, info, colSpan = '1' }) => (
 	<Box
 		className={`
       col-span-full md:col-span-${colSpan}
-      p-6 rounded-md
+      p-2 sm:p-6 rounded-md
       hover:scale-[105%]
       bg-slate-50
       shadow-md
@@ -47,7 +47,7 @@ const InfoBox = ({ title, info, colSpan = '1' }) => (
 	>
 		<Typography
 			className={`
-        -mt-3 mb-4 -ml-2
+        sm:-mt-3 mb-2 sm:mb-4 sm:-ml-2
         font-light text-md text-left
         text-amber-800
       `}
@@ -56,7 +56,7 @@ const InfoBox = ({ title, info, colSpan = '1' }) => (
 		</Typography>
 		<p
 			className={`
-        mt-3 mb-3
+        mt-1 sm:mt-3 mb-1 sm:mb-3
         text-md text-center
       `}
 		>
@@ -93,6 +93,9 @@ export default function DealerProductsPage({
 			setUser(() => false);
 		} else {
 			setUser(() => true);
+			if (parseJwt(token)?.sub?.user_type === 'admin') {
+				setUser(() => "admin");
+			}
 		}
 	}, []);
 
@@ -125,9 +128,13 @@ export default function DealerProductsPage({
 			<Layout fullWidth>
 			<div className='w-full'>
 			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
+				</Link>
+				</NextLink>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
@@ -165,9 +172,13 @@ export default function DealerProductsPage({
 			<Layout fullWidth>
 			<div className='w-full'>
 			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
+				</Link>
+				</NextLink>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
@@ -206,9 +217,13 @@ export default function DealerProductsPage({
 			<Layout fullWidth>
 			<div className='w-full'>
 			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
+				</Link>
+				</NextLink>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
@@ -309,9 +324,13 @@ export default function DealerProductsPage({
 		return (
 			<Layout fullWidth>
 				<header className='bg-white border-0 border-b border-solid border-neutral-300 container mx-auto py-2 px-4 flex justify-between items-center select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
 				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
+				</Link>
+				</NextLink>
 				<nav className='w-full flex justify-end items-center flex-wrap'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
@@ -348,11 +367,15 @@ export default function DealerProductsPage({
 	return (
 		<Layout fullWidth>	
 			<div className='w-full'>
-			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex flex-col sm:flex-row justify-between items-center select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
-				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
+				</Link>
+				</NextLink>
+				<nav className='w-full flex justify-center sm:justify-end items-center flex-wrap ml-2'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -396,18 +419,23 @@ export default function DealerProductsPage({
 						</Link>
 					</NextLink>
 
-					{!!user ? (
-						<>
-
-						<NextLink href='/dealer/profile' passHref>
+					{!!user ? ( user === "admin" ? (
+						<NextLink href='/admin/settings' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 									<HiUserCircle size={24} className='' /> Profile
 								</span>
 							</Link>
 						</NextLink>
-						</>
-						) : (
+							) : (
+						<NextLink href='/dealer/profile' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
+								</span>
+							</Link>
+						</NextLink>
+						)) : (
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='flex items-center  gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -444,7 +472,7 @@ export default function DealerProductsPage({
 					/>
 				</section>
 
-				<section className='mb-6 grid grid-cols-12 gap-2'>
+				<section className='mb-6 grid grid-cols-6 sm:grid-cols-12 gap-2'>
 					<div className='col-span-6 bg-white flex justify-center items-center gap-4 '>
 						<Autocomplete
 							multiple
@@ -480,14 +508,14 @@ export default function DealerProductsPage({
 
 				<Grid
 					container
-					spacing={2}
+					spacing={1}
 					direction='row'
 					justifyContent='center'
 					alignItems='center'
-					className='px-2.5 md:px-1.5 xl:px-0 mb-4'
+					className='px-0.5 md:px-1.5 xl:px-0 mb-4'
 				>
 					{products.map((product, i) => (
-						<Grid item sm={6} md={productSize} key={i}>
+						<Grid item xs={6} sm={6} md={productSize} key={i}>
 							<Product
 								product={product}
 								size={productSize}
@@ -526,7 +554,7 @@ export default function DealerProductsPage({
 
 				<Dialog fullWidth maxWidth='md' open={open} onClose={handleClose}>
 					<DialogContent className=' p-4 '>
-						<section className='grid grid-cols-2 gap-4'>
+						<section className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 							<div>
 								<Product product={{ id: selected.id, image: selected.image }} sendOnlyImage />
 							</div>
@@ -576,7 +604,7 @@ export default function DealerProductsPage({
 											color='primary'
 											size='large'
 											type='submit'
-											className={`bg-[#212021] hover:bg-gray-600 font-medium text-lg tracking-wider normal-case`}
+											className={`bg-[#212021] hover:bg-gray-600 font-medium text-sm sm:text-lg tracking-wider normal-case`}
 											disabled={isSubmitting}
 										>
 											Add to Cart

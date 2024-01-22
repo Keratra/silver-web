@@ -37,8 +37,11 @@ export default function MapPage () {
       if (!token || token === '' || token === 'null' || token === null ) {
           setUser(() => false);
       } else {
-          setUser(() => true);
-      }
+        setUser(() => true);
+        if (parseJwt(token)?.sub?.user_type === 'admin') {
+            setUser(() => "admin");
+        }
+    }
   }, []);
 
   const handleCityChange = async () => {
@@ -70,11 +73,15 @@ export default function MapPage () {
   return (
     <Layout fullWidth>
         <div className='w-full'>
-			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
-					SILVER
-				</h1>
-				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex flex-col sm:flex-row justify-between items-center select-none'>
+                <NextLink href='/' passHref>
+                <Link className='no-underline'>
+                <h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+                    SILVER
+                </h1>
+                </Link>
+                </NextLink>
+				<nav className='w-full flex justify-center sm:justify-end items-center flex-wrap ml-2'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -99,18 +106,23 @@ export default function MapPage () {
 						</Link>
 					</NextLink>
 
-					{!!user ? (
-						<>
-
-						<NextLink href='/dealer/profile' passHref>
+					{!!user ? ( user === "admin" ? (
+						<NextLink href='/admin/settings' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 									<HiUserCircle size={24} className='' /> Profile
 								</span>
 							</Link>
 						</NextLink>
-						</>
-						) : (
+							) : (
+						<NextLink href='/dealer/profile' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
+								</span>
+							</Link>
+						</NextLink>
+						)) : (
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='flex items-center  gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -123,26 +135,9 @@ export default function MapPage () {
 			</header>
         </div>
 
-        {/* <div className='absolute'>
-            <div className='relative top-2 left-2'>
-                <NextLink href='/' passHref>
-                    <a
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                        }}
-                        className=' text-slate-500 drop-shadow-sm hover:text-slate-900 transition-colors'
-                    >
-                        <ArrowBack /> <span className='ml-1 mt-1'>RETURN TO HOMEPAGE</span>
-                    </a>
-                </NextLink>
-            </div>
-        </div> */}
-
-        <section className='h-[100vh] flex flex-col justify-center items-center'>
-            <Card className={`p-4 shadow-lg hover:shadow-xl transition-all rounded-md`}>
-            <h2 className="text-4xl font-bold mb-2 text-center">
+        <section className='h-[100vh] flex flex-col justify-center items-center mx-1'>
+            <Card className={`p-2 sm:p-4 shadow-lg hover:shadow-xl transition-all rounded-md`}>
+            <h2 className="text-2xl sm:text-4xl font-bold mb-2 text-center">
                 Get Current Weather
             </h2>
                 <div className={`grid grid-cols-1 gap-4 m-4 min-w-[80vw] md:min-w-[60vw] lg:min-w-[40vw] xl:min-w-[25vw] content-center place-content-center max-w-sm mx-auto px-4`}>

@@ -146,11 +146,15 @@ export default function DealerOrderConfirmPage({ paymentMethods }) {
 	return (
 		<Layout fullWidth>
 			<div className='w-full'>
-			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex flex-col sm:flex-row justify-between items-center select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
-				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
+				</Link>
+				</NextLink>
+				<nav className='w-full flex justify-center sm:justify-end items-center flex-wrap ml-2'>
 					<NextLink href='/dealer' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -220,28 +224,24 @@ export default function DealerOrderConfirmPage({ paymentMethods }) {
 								<TableRow style={{ backgroundColor: '#212021' }}>
 									<TableCell
 										align='left'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Product
 									</TableCell>
 									<TableCell
 										align='center'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Quantity
 									</TableCell>
 									<TableCell
 										align='right'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Price
 									</TableCell>
 									<TableCell
 										align='right'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Total

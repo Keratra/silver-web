@@ -127,7 +127,7 @@ export default function AdminProducts({
 
 	return (
 		<Layout>
-			<div className={`px-4 lg:px-12`}>
+			<div className={`px-2 sm:px-4 lg:px-12`}>
 				<section
 					className={`grid grid-cols-1 md:grid-cols-3 place-items-center mt-6 mb-3`}
 				>
@@ -161,7 +161,7 @@ export default function AdminProducts({
 					/>
 				</section>
 
-				<section className='mb-6 grid grid-cols-12 gap-2'>
+				<section className='mb-3 sm:mb-6 grid grid-cols-6 sm:grid-cols-12 gap-2'>
 					<div className='col-span-6 bg-white flex justify-center items-center gap-4 '>
 						<Autocomplete
 							multiple
@@ -198,14 +198,14 @@ export default function AdminProducts({
 
 				<Grid
 					container
-					spacing={2}
+					spacing={1}
 					direction='row'
 					justifyContent='center'
 					alignItems='center'
 					className=''
 				>
 					{products.map((product) => (
-						<Grid item md={productSize} key={product.id}>
+						<Grid item xs={6} sm={6}  md={productSize} key={product.id}>
 							<Product
 								product={product}
 								size={productSize}

@@ -64,8 +64,8 @@ export default function Layout({ fullWidth, title, children }) {
 		// const titlePath = '/';
 		setDrawer(
 			<div>
-				<div className='mt-6 -mb-14 text-xl text-center cursor-pointer'>
-					<NextLink href={titlePath} passHref>
+				<div className='mt-6 text-xl text-center cursor-pointer'>
+					<NextLink href='/' passHref>
 						<Link className={`no-underline`}>
 							<span
 								className={`font-serif text-2xl text-black transition-colors tracking-wider uppercase`}
@@ -75,7 +75,7 @@ export default function Layout({ fullWidth, title, children }) {
 						</Link>
 					</NextLink>
 				</div>
-				<Toolbar />
+				{/* <Toolbar /> */}
 				<List className={`flex flex-col justify-evenly items-center`}>
 					{items.map(({ name, pathname, icon }, index) => (
 						<ListItem key={index} disablePadding>
@@ -152,7 +152,7 @@ export default function Layout({ fullWidth, title, children }) {
 				<meta property='og:type' content='website' />
 				<meta
 					property='og:description'
-					content='A marketplace for products sold by owners'
+					content='A marketplace for fine jewelry products'
 				/>
 				<meta property='og:image' content='/favicon.ico' />
 			</Head>
@@ -263,21 +263,21 @@ export default function Layout({ fullWidth, title, children }) {
 						{children}
 
 						{!!fullWidth && (
-							<footer className='w-full bg-black text-gray-100 py-2'>
-								<div className='flex flex-wrap justify-between px-4'>
-									<p className='text-sm'>
+							<footer className='w-full bg-black text-gray-100 py-1 sm:py-2'>
+								<div className='flex justify-between px-4'>
+									<p className='text-xs sm:text-sm'>
 										&copy; 2024 Silver Market. All rights reserved.
 									</p>
-									<nav className='text-sm flex items-center'>
-										<a href='#' className='text-gray-100 hover:text-gray-300 mx-3 transition-colors'>
+									<nav className='text-xs sm:text-sm flex items-center'>
+										<a href='#' className='text-gray-100 hover:text-gray-300 mx-1 sm:mx-3 transition-colors'>
 											Terms of Service
 										</a>
-										<a href='#' className='text-gray-100 hover:text-gray-300 mx-3 transition-colors'>
+										<a href='#' className='text-gray-100 hover:text-gray-300 mx-1 sm:mx-3 transition-colors'>
 											Privacy Policy
 										</a>
 
 										<NextLink href='/admin/login' passHref>
-											<Link className='mx-3 no-underline'>
+											<Link className='mx-1 sm:mx-3 no-underline'>
 												<span className='text-gray-100 hover:text-gray-300 transition-colors'>
 													Admin Login
 												</span>

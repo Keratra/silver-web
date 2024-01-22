@@ -201,35 +201,11 @@ const Product = ({
 								></Typography>
 							)}
 						</div>
-
-						{/* <div
-							className={`my-1  text-neutral-600 text-sm text-center  drop-shadow-md`}
-						>
-							{(!product?.category_id || product?.category_id === '') && (
-								<SkeletonTheme baseColor='#444' highlightColor='#555'>
-									<Skeleton />
-								</SkeletonTheme>
-							)}
-							{product?.category_id &&
-								categories[parseInt(product?.category_id) - 1]}
-							
-							{(!!hasPrice || product?.price === 0) ? (
-								<span
-									className={`flex-auto ml-1 mt-0.5  tracking-wider text-center`}
-								>
-									- {formatPrice(product?.price)}
-								</span>
-							) : (
-								<Typography
-									className={`flex-auto ml-1 mt-0.5 text-sm`}
-								></Typography>
-							)}
-						</div> */}
 					</CardContent>
-				</CardMedia>
 
+					
 				{displayOnly ? null : (
-					<CardActions className={`bg-white`}>
+					<CardActions className={`bg-white p-0.5 m-0 `}>
 						<span className={`flex-auto`} />
 
 						{!!dashboardTitle && (
@@ -240,33 +216,33 @@ const Product = ({
 
 						{!!fabFunc &&
 							(!adminView ? (
-								<Fab
-									size='small'
-									onClick={fabFunc}
-									variant='extended'
-									className={`shadow-none text-neutral-900 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
-								>
-									{forCart ? <FiPlus size={24} /> : 'N/A FUNCTION'}
-								</Fab>
+							<Fab
+								size='small'
+								onClick={fabFunc}
+								variant='extended'
+								className={`shadow-none text-neutral-900 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
+							>
+								{forCart ? <FiPlus size={24} /> : 'N/A FUNCTION'}
+							</Fab>
 							) : (
-								<>
-									<Fab
-										size='small'
-										onClick={fabFunc}
-										className={`shadow-none text-red-600 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
-									>
-										<FiTrash size={24} />
-									</Fab>
+							<>
+							<Fab
+								size='small'
+								onClick={fabFunc}
+								className={`shadow-none text-red-600 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
+							>
+								<FiTrash size={24} />
+							</Fab>
 
-									<Fab
-										size='small'
-										onClick={() => handleDetailRedirect()}
-										variant='extended'
-										className={`shadow-none text-neutral-900 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
-									>
-										<FiEdit size={24} />
-									</Fab>
-								</>
+							<Fab
+								size='small'
+								onClick={() => handleDetailRedirect()}
+								variant='extended'
+								className={`shadow-none text-neutral-900 hover:bg-neutral-200 bg-transparent drop-shadow-md`}
+							>
+								<FiEdit size={24} />
+							</Fab>
+							</>
 							))}
 
 						{!!handlePriceChange && (
@@ -286,6 +262,8 @@ const Product = ({
 						)}
 					</CardActions>
 				)}
+				</CardMedia>
+
 			</Card>
 		</div>
 	);

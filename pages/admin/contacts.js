@@ -104,34 +104,41 @@ export default function InquiriesPage({
 										<div className=''>
 											<Card className='flex flex-col justify-start items-start gap-2 rounded-lg p-4 shadow-md bg-white overflow-x-auto'>
 												<div className='w-full flex flex-grow justify-center items-center'>
-                                                <span className='rounded-sm border-solid border-t-0 border-l-0 border-r-0 border-b-2 border-b-slate-400 hover:border-orange-500 cursor-default'>
-													ID #{id}
-												</span>
-												<div className='ml-6 flex-grow h-full'>
-													<span className='text-xl rounded-sm text-neutral-900 cursor-default'>
-														{name} {' '}
-														<span className='ml-4 text-sm italic font-normal text-slate-600'>
-                                                            {email}
-														</span>
+													<span className='text-xs sm:text-base rounded-sm border-solid border-t-0 border-l-0 border-r-0 border-b-2 border-b-slate-400 hover:border-orange-500 cursor-default'>
+														ID #{id}
 													</span>
+													<div className='w-full flex flex-grow justify-center items-center'>
+														<div className='text-center ml-3 sm:ml-6 flex-grow h-full'>
+															<span className='mb-2 text-lg sm:text-xl rounded-sm text-neutral-900 cursor-default'>
+																{name}
+															</span>
+															<div className='w-full flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4'>
+																<span className='ml-2 sm:ml-4 text-sm italic font-normal text-slate-600'>
+																	{email}
+																</span>
+															</div>
+														</div>
+													</div>
+                                                </div>
+
+												<div className='w-full flex flex-col sm:flex-row justify-between items-center gap-2'>
+													<div className="mt-2">
+														<span className='text-sm sm:text-base rounded-sm text-neutral-700 cursor-default'>
+															{description}
+														</span>
+													</div>
 												</div>
-                                                <div className='ml-2 h-full'>
-													<span className='text-xl rounded-sm text-neutral-900 cursor-default'>
+
+												<div className='w-full text-end'>
+													<span className='text-sm sm:text-base rounded-sm text-neutral-900 cursor-default'>
 														<span className='italic font-light text-slate-600'>
-                                                            Created at{' '}
-                                                            {new Date(
-                                                                created_at
-                                                            ).toLocaleDateString()}
+															Created at{' '}
+															{new Date(
+																created_at
+															).toLocaleDateString()}
 														</span>
 													</span>
 												</div>
-                                                </div>
-                                                
-                                                <div className="mt-2 ml-2">
-                                                    <span className='text-xl rounded-sm text-neutral-700 cursor-default'>
-                                                        {description}
-                                                    </span>
-                                                </div>
 											</Card>
                                             
                                             

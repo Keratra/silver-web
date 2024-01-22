@@ -34,6 +34,9 @@ const ContactPage = () => {
         setUser(() => false);
       } else {
         setUser(() => true);
+        if (parseJwt(token)?.sub?.user_type === 'admin') {
+          setUser(() => "admin");
+        }
       }
     }, []);
 
@@ -118,11 +121,15 @@ const ContactPage = () => {
   return (
     <Layout fullWidth>
       <div className='w-full'>
-			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
-					SILVER
-				</h1>
-				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex flex-col sm:flex-row justify-between items-center select-none'>
+          <NextLink href='/' passHref>
+					<Link className='no-underline'>
+					<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+						SILVER
+					</h1>
+					</Link>
+					</NextLink>
+				<nav className='w-full flex justify-center sm:justify-end items-center flex-wrap ml-2'>
 					<NextLink href='/' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -147,18 +154,23 @@ const ContactPage = () => {
 						</Link>
 					</NextLink>
 
-					{!!user ? (
-						<>
-
-						<NextLink href='/dealer/profile' passHref>
+					{!!user ? ( user === "admin" ? (
+						<NextLink href='/admin/settings' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
-								<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
 									<HiUserCircle size={24} className='' /> Profile
 								</span>
 							</Link>
 						</NextLink>
-						</>
-						) : (
+							) : (
+						<NextLink href='/dealer/profile' passHref>
+							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
+								<span className='flex items-center gap-x-2 text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
+									<HiUserCircle size={24} className='' /> Profile
+								</span>
+							</Link>
+						</NextLink>
+						)) : (
 						<NextLink href='/dealer/login' passHref>
 							<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 								<span className='flex items-center  gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -171,25 +183,8 @@ const ContactPage = () => {
 			</header>
 			</div>
 
-    {/* <div className='absolute'>
-        <div className='relative top-2 left-2'>
-            <NextLink href='/' passHref>
-                <a
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                    }}
-                    className=' text-slate-500 drop-shadow-sm hover:text-slate-900 transition-colors'
-                >
-                    <ArrowBack /> <span className='ml-1 mt-1'>RETURN TO HOMEPAGE</span>
-                </a>
-            </NextLink>
-        </div>
-    </div> */}
-
     <div className="min-h-screen flex items-center justify-center">
-    <Card className="p-4 shadow-lg hover:shadow-xl transition-all rounded-md">
+    <Card className="p-2 sm:p-4 shadow-lg hover:shadow-xl transition-all rounded-md">
       <Formik
         initialValues={{
           name: '',
@@ -210,7 +205,7 @@ const ContactPage = () => {
         }) => (
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 gap-4 m-4 min-w-[80vw] md:min-w-[60vw] lg:min-w-[40vw] xl:min-w-[25vw] content-center place-content-center max-w-sm mx-auto px-4"
+            className="grid grid-cols-1 gap-4 m-4 min-w-[80vw] md:min-w-[60vw] lg:min-w-[40vw] xl:min-w-[25vw] content-center place-content-center max-w-sm mx-auto px-2 sm:px-4"
           >
             <h1 className="font-semibold text-center m-0 -mt-2">
               Contact Us

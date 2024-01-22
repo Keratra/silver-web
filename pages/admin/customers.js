@@ -88,36 +88,44 @@ export default function InquiriesPage({
 								}) => (
 									<Grid item key={id} xs={12}>
 										<div className=''>
-											<Card className='flex flex-col justify-start items-start gap-2 rounded-lg p-4 shadow-md bg-white overflow-x-auto'>
-												<div className='w-full flex flex-grow justify-center items-center'>
-                                                <span className='rounded-sm border-solid border-t-0 border-l-0 border-r-0 border-b-2 border-b-slate-400 hover:border-orange-500 cursor-default'>
+											<Card className='flex flex-col justify-start items-start gap-2 rounded-lg p-2 sm:p-4 shadow-md bg-white overflow-x-auto'>
+												<span className='text-xs sm:text-base rounded-sm border-solid border-t-0 border-l-0 border-r-0 border-b-2 border-b-slate-400 hover:border-orange-500 cursor-default'>
 													ID #{id}
 												</span>
-												<div className='ml-6 flex-grow h-full'>
-													<span className='text-xl rounded-sm text-neutral-900 cursor-default'>
-														{name} {' '}
-														<span className='ml-4 text-sm italic font-normal text-slate-600'>
-                                                            {email}{' '}{phone}
+												<div className='w-full flex flex-grow justify-center items-center'>
+													<div className='text-center ml-3 sm:ml-6 flex-grow h-full'>
+														<span className='mb-2 text-lg sm:text-xl rounded-sm text-neutral-900 cursor-default'>
+															{name}
 														</span>
-													</span>
-												</div>
-                                                <div className='ml-2 h-full'>
-													<span className='text-xl rounded-sm text-neutral-900 cursor-default'>
-														<span className='italic font-light text-slate-600'>
-                                                            Registered in{' '}
-                                                            {new Date(
-                                                                created_at
-                                                            ).toLocaleDateString()}
+														<div className='w-full flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4'>
+															<span className='ml-2 sm:ml-4 text-sm italic font-normal text-slate-600'>
+																{email}
+															</span>
+															<span className='ml-1 text-sm italic font-normal text-slate-600'>
+																{phone}
+															</span>
+														</div>
+													</div>
+                                                </div>
+
+                                                <div className='w-full flex flex-col sm:flex-row justify-between items-center gap-2'>
+													<div className="mt-2">
+														<span className='text-sm sm:text-base rounded-sm text-neutral-700 cursor-default'>
+															{address}, {city} / {country}
 														</span>
-													</span>
+													</div>
+												
+													<div className='text-end'>
+														<span className='text-sm sm:text-base rounded-sm text-neutral-900 cursor-default'>
+															<span className='italic font-light text-slate-600'>
+																Registered in{' '}
+																{new Date(
+																	created_at
+																).toLocaleDateString()}
+															</span>
+														</span>
+													</div>
 												</div>
-                                                </div>
-                                                
-                                                <div className="mt-2 ml-2">
-                                                    <span className='text-xl rounded-sm text-neutral-700 cursor-default'>
-                                                        {address}, {city} / {country}
-                                                    </span>
-                                                </div>
 											</Card>
                                             
                                             

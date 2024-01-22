@@ -97,83 +97,19 @@ export default function DealerCartPage() {
 			// console.log(loadState(CART).products);
 		}
 	};
-	//   try {
-	//     const cart = loadState(CART);
-
-	//     if (cart) {
-	//       const currentAmount = cart.products[product.id] ?? 0;
-
-	//       saveState(CART, {
-	//         products: {
-	//           ...cart.products,
-	//           [product.id]: currentAmount + 1,
-	//         },
-	//       });
-	//     } else {
-	//       const initialCartValue = {
-	//         products: {
-	//           [product.id]: 1,
-	//         },
-	//       };
-
-	//       saveState(CART, initialCartValue);
-	//     }
-	//   } catch (error) {
-	//     notify('error', 'Ürün sepete eklenemedi.');
-	//   } finally {
-	//     console.log(loadState(CART).products);
-	//   }
-	// };
-
-	// const handleDecrement = async (product) => {
-	//   try {
-	//     const cart = loadState(CART);
-
-	//     if (cart) {
-	//       const currentAmount = cart.products[product.id] ?? 0;
-
-	//       if (currentAmount === 1 || currentAmount === 0) {
-	//         if (confirm('Sepetten çıkarmak istediğinize emin misiniz?')) {
-	//           let newCartProducts = cart.products;
-	//           delete newCartProducts[product.id];
-
-	//           saveState(CART, {
-	//             ...cart,
-	//             products: newCartProducts,
-	//           });
-	//         }
-	//       }
-
-	//       saveState(CART, {
-	//         products: {
-	//           ...cart.products,
-	//           [product.id]: currentAmount - 1 < 0 ? 0 : currentAmount - 1,
-	//         },
-	//       });
-	//     }
-	//   } catch (error) {
-	//     notify('error', 'Ürün sepete eklenemedi.');
-	//   } finally {
-	//     console.log(loadState(CART).products);
-	//   }
-	// };
-
-	// const handleEmptyCart = async () => {
-	//   try {
-	//     localStorage.removeItem(CART);
-	//   } catch (error) {
-	//     notify('error', 'Sepet boşaltılamadı.');
-	//   }
-	// };
-
+	
 	return (
 		<Layout fullWidth>
 			<div className='w-full'>
-			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex justify-between items-center select-none'>
-				<h1 className='font-serif font-medium text-lg sm:text-xl md:text-3xl text-gray-800 cursor-default select-none'>
+			<header className=' w-full bg-white border-0 border-b border-solid border-neutral-300 py-2 px-4 flex flex-col sm:flex-row justify-between items-center select-none'>
+				<NextLink href='/' passHref>
+				<Link className='no-underline'>
+				<h1 className='font-serif font-medium text-xl md:text-3xl text-gray-800 cursor-default select-none'>
 					SILVER
 				</h1>
-				<nav className='w-full flex justify-end items-center flex-wrap ml-2'>
+				</Link>
+				</NextLink>
+				<nav className='w-full flex justify-center sm:justify-end items-center flex-wrap ml-2'>
 					<NextLink href='/dealer' passHref>
 						<Link className='mx-1 md:mx-3 p-1 text-black no-underline  rounded-none transition-colors'>
 							<span className='flex items-center gap-x-2 text-xs sm:text-sm md:text-lg tracking-wider bg-none hover:bg-white hover:shadow-md shadow-white md:p-1 lg:p-2 opacity-80 hover:rounded-md transition-all'>
@@ -222,44 +158,38 @@ export default function DealerCartPage() {
 			</header>
 			</div>
 			
-			<div className={`max-w-7xl mx-auto px-2 lg:px-12 min-h-screen`}>
+			<div className={`max-w-7xl mx-auto px-2 lg:px-12 min-h-screen overflow-x-auto`}>
 				<section className={`flex`}>
-					<h1
-						className={`flex-grow font-semibold text-xl md:text-3xl drop-shadow-md`}
-					>
+					<h1 className={`flex-grow font-semibold text-xl md:text-3xl drop-shadow-md`}>
 						Your Cart
 					</h1>
 				</section>
 
-				<Paper className='w-full shadow-md'>
-					<TableContainer>
-						<Table stickyHeader>
+				<Paper className='w-full shadow-md break-words'>
+					<TableContainer className=''>
+						<Table stickyHeader className='overflow-x-auto'>
 							<TableHead>
 								<TableRow style={{ backgroundColor: '#212021' }}>
 									<TableCell
 										align='left'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Product
 									</TableCell>
 									<TableCell
 										align='center'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Quantity
 									</TableCell>
 									<TableCell
 										align='right'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Price
 									</TableCell>
 									<TableCell
 										align='right'
-										style={{ minWidth: 170 }}
 										className={tableHeadClasses}
 									>
 										Total
@@ -267,7 +197,7 @@ export default function DealerCartPage() {
 								</TableRow>
 							</TableHead>
 
-							<TableBody>
+							<TableBody className='overflow-x-auto'>
 								{!!cart &&
 									Object.values(cart)
 										?.filter((elem) => elem !== undefined)
@@ -277,12 +207,13 @@ export default function DealerCartPage() {
 									role='checkbox'
 									tabIndex={-1}
 									key={product.id}
+									className='overflow-x-auto'
 								>
 									<TableCell align='left' className={tableBodyClasses}>
 										{product.name}
 									</TableCell>
 									<TableCell align='center' className={tableBodyClasses}>
-										<section className='flex justify-between items-center gap-x-3 ml-3 align-baseline'>
+										<section className='flex justify-between items-center gap-x-1 sm:gap-x-3 ml-3 align-baseline'>
 											<button
 												onClick={() => handleDecrement(product, amount)}
 												className='cursor-pointer bg-transparent hover:bg-transparent drop-shadow-md border-none text-rose-500 hover:text-rose-300 transition-colors '
@@ -293,21 +224,6 @@ export default function DealerCartPage() {
 													<FiMinus size={24} />
 												)}
 											</button>
-
-											{/* <ThemeProvider theme={darkTheme}>
-													<CssBaseline />
-													<TextField
-													fullWidth
-													variant='outlined'
-													id='amount'
-													name='amount'
-													type='number'
-													placeholder='Enter your password...'
-													className='text-center'
-													value={amount}
-													// onChange={handleChange}
-													/>
-												</ThemeProvider> */}
 											<span>{amount}</span>
 
 											<button
@@ -325,9 +241,10 @@ export default function DealerCartPage() {
 										{formatPrice(product.price * amount)}
 									</TableCell>
 								</TableRow>
-										))}
-								{!!cart && (
-								<TableRow hover role='checkbox' tabIndex={-1}>
+								))}
+								
+								{(!!cart && Object.values(cart)?.map(([_, amount]) => amount)?.reduce((partialSum, a) => partialSum + a, 0) !== 0) && (
+								<TableRow hover role='checkbox' tabIndex={-1} className='overflow-x-auto'>
 									<TableCell
 										align='left'
 										className={tableBodyClasses + ' font-semibold'}
@@ -353,7 +270,7 @@ export default function DealerCartPage() {
 										className={tableBodyClasses + ' font-semibold'}
 									>
 										Order Total
-										<span className='ml-2 font-normal'>
+										<span className='ml-1 sm:ml-2 font-normal'>
 											{formatPrice(
 												Object.values(cart)
 													?.map(([product, amount]) => product.price * amount)
@@ -366,7 +283,7 @@ export default function DealerCartPage() {
 							</TableBody>
 						</Table>
 
-						{!cart && (
+						{(!cart || Object.values(cart)?.map(([_, amount]) => amount)?.reduce((partialSum, a) => partialSum + a, 0) === 0) && (
 							<div className='my-1 font-medium text-xl text-rose-600 text-center'>
 								No product in cart.
 							</div>
@@ -374,6 +291,7 @@ export default function DealerCartPage() {
 					</TableContainer>
 				</Paper>
 
+				{Object.values(cart)?.map(([_, amount]) => amount)?.reduce((partialSum, a) => partialSum + a, 0) !== 0 && (
 				<div className='grid grid-cols-2 place-items-center gap-3 my-12'>
 					<div className=''>
 						<Fab
@@ -387,7 +305,7 @@ export default function DealerCartPage() {
 							<FiTrash size={22} className='mr-1' /> DELETE ORDER
 						</Fab>
 					</div>
-
+					
 					<NextLink href='/dealer/order-confirm' passHref>
 						<Link className={`no-underline transition-colors`}>
 							<Fab
@@ -402,6 +320,7 @@ export default function DealerCartPage() {
 						</Link>
 					</NextLink>
 				</div>
+				)}
 			</div>
 		</Layout>
 	);

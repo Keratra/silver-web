@@ -112,7 +112,7 @@ export default function DashboardPage({
 
 	return (
 		<Layout>
-			<div className={`m-1 md:m-2 grid grid-cols-1 lg:grid-cols-6 gap-4`}>
+			<div className={`mt-14 sm:mt-2 m-1 md:m-2 grid grid-cols-1 lg:grid-cols-6 gap-2 md:gap-4`}>
 				<section
 					className='
 							col-span-1 lg:col-span-3
@@ -148,14 +148,14 @@ export default function DashboardPage({
 				<section
 					className='
 						col-span-1 lg:col-span-6
-						p-4 bg-white flex flex-col justify-center
+						p-1 sm:p-2 md:p-4 bg-white flex flex-col justify-center
 						rounded-sm shadow-md '
 				>
 					<h2 className='m-0 mb-4 text-center text-xl lg:text-3xl'>
 						Most Sold Products
 					</h2>
 					<div className=''>
-						<section className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+						<section className='grid grid-cols-2 md:grid-cols-3 gap-1 sm:gap-2 md:gap-4 place-items-center'>
 							{most_sold_products.map(
 								(
 									{
@@ -179,7 +179,7 @@ export default function DashboardPage({
 												image,
 												price
 											}}
-											size={4}
+											size={3}
 											categories={categoryLabels}
 											dashboardTitle={
 												<span className='font-light text-xl text-center text-black'>
