@@ -291,7 +291,7 @@ export default function DealerCartPage() {
 					</TableContainer>
 				</Paper>
 
-				{Object.values(cart)?.map(([_, amount]) => amount)?.reduce((partialSum, a) => partialSum + a, 0) !== 0 && (
+				{(!!cart && Object.values(cart)?.map(([_, amount]) => amount)?.reduce((partialSum, a) => partialSum + a, 0) !== 0) && (
 				<div className='grid grid-cols-2 place-items-center gap-3 my-12'>
 					<div className=''>
 						<Fab
